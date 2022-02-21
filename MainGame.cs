@@ -6,6 +6,7 @@ namespace SceenGame
 {
     public class MainGame : Game
     {
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
