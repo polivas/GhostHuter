@@ -9,7 +9,7 @@ using SceenGame.StateManagement;
 namespace SceenGame.Screens
 {
 
-    public class BackgroundScreen : GameScreen
+    public class BackgroundScreen : StateManagement.GameScreen
     {
         private ContentManager _content;
         private Texture2D _backgroundTexture;

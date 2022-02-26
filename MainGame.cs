@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
-
 using SceenGame.StateManagement;
 using SceenGame.Screens;
 
@@ -16,7 +14,6 @@ namespace SceenGame
         private SpriteBatch _spriteBatch;       
         private readonly ScreenManager _screenManager;
         
-
         public MainGame()
         {
             _graphics = new GraphicsDeviceManager(this);

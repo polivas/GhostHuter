@@ -25,8 +25,7 @@ namespace SceenGame.StateManagement
         /// <param name="firstPressOnly">If this action only triggers on the initial key/button press</param>
         public InputAction(Buttons[] triggerButtons, Keys[] triggerKeys, bool firstPressOnly)
         {
-            // Store the buttons and keys. If the arrays are null, we create a 0 length array so we don't
-            // have to do null checks in the Occurred method
+
             _buttons = triggerButtons != null ? triggerButtons.Clone() as Buttons[] : new Buttons[0];
             _keys = triggerKeys != null ? triggerKeys.Clone() as Keys[] : new Keys[0];
             _firstPressOnly = firstPressOnly;
@@ -40,7 +39,6 @@ namespace SceenGame.StateManagement
         /// <param name="player">The player (0-3) who triggered the action</param>
         public bool Occurred(InputState stateToTest, PlayerIndex? playerToTest, out PlayerIndex player)
         {
-            // Figure out which delegate methods to map from the state which takes care of our "firstPressOnly" logic
             ButtonPress buttonTest;
             KeyPress keyTest;
 
@@ -55,7 +53,6 @@ namespace SceenGame.StateManagement
                 keyTest = stateToTest.IsKeyPressed;
             }
 
-            // Now we simply need to invoke the appropriate methods for each button and key in our collections
             foreach (var button in _buttons)
             {
                 if (buttonTest(button, playerToTest, out player))
@@ -66,8 +63,6 @@ namespace SceenGame.StateManagement
                 if (keyTest(key, playerToTest, out player))
                     return true;
             }
-
-            // If we got here, the action is not matched
             player = PlayerIndex.One;
             return false;
         }

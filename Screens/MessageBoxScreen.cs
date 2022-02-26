@@ -8,7 +8,7 @@ using SceenGame.StateManagement;
 
 namespace SceenGame.Screens
 {
-    public class MessageBoxScreen : GameScreen
+    public class MessageBoxScreen : StateManagement.GameScreen
     {
         private readonly string _message;
         private Texture2D _gradientTexture;
@@ -19,7 +19,7 @@ namespace SceenGame.Screens
         public event EventHandler<PlayerIndexEventArgs> Cancelled;
         public MessageBoxScreen(string message, bool includeUsageText = true)
         {
-            const string usageText = "\nPress A button, Space, Enter to Exit" +
+            const string usageText = "\nA button, Space, Enter to Exit" +
                                      "\nB button, Backspace = cancel";
 
             if (includeUsageText)

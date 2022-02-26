@@ -15,16 +15,11 @@ using SceenGame.Screens.Content;
 
 namespace SceenGame.Screens
 {
-    public class GameplayScreen : GameScreen
+    public class GameScreen : StateManagement.GameScreen
     {
         private ContentManager _content;
         private SpriteFont _gameFont;
-
         private World world;
-
-        // private SpriteBatch spriteBatch;
-
-
         private BackgroundBuilder background;
         private List<BirdSprite> birds;
         private HunterSprite hunter;
@@ -35,7 +30,7 @@ namespace SceenGame.Screens
         
 
 
-        public GameplayScreen()
+        public GameScreen()
         {
             
 
@@ -92,7 +87,6 @@ namespace SceenGame.Screens
                     random.Next(radius, Constants.GAME_HEIGHT - radius)
                     );
 
-                //Adding rigid body
                 var body = world.CreateCircle(radius, 1, position, BodyType.Dynamic);
 
                 body.LinearVelocity = new Vector2(
@@ -109,19 +103,13 @@ namespace SceenGame.Screens
             Vector2 pos = (new Vector2(150,200));
             hunter = new HunterSprite(pos);
 
-
             var swordBody = world.CreateRectangle(25, 30, 1, (pos - (new Vector2(0, 35))), 0, BodyType.Dynamic);//check back
             swordBody.LinearVelocity = new Vector2(0, 0);
             swordBody.AngularVelocity = (float)0;
             swordBody.SetRestitution(1);
 
-            sword = new SwordSprite(pos - (new Vector2(0, 35)), swordBody);
-
-            
+            sword = new SwordSprite(pos - (new Vector2(0, 35)), swordBody);           
         }
-
-
-
 
         // Load graphics content
         public override void Activate()
@@ -130,14 +118,10 @@ namespace SceenGame.Screens
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
             _gameFont = _content.Load<SpriteFont>("gamefont");
-
             background.LoadContent(_content);
-
             foreach (var birds in birds) birds.LoadContent(_content);
             sword.LoadContent(_content);
-
             hunter.LoadContent(_content);
-
             ScreenManager.Game.ResetElapsedTime();
         }
 
@@ -153,10 +137,7 @@ namespace SceenGame.Screens
         }
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
-
-
-
-                foreach (var bird in birds) bird.Update(gameTime);
+            foreach (var bird in birds) bird.Update(gameTime);
             hunter.Update(gameTime);
             sword.Update(gameTime, (hunter.Position - (new Vector2(15, 38))), hunter.Flipped);
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -193,8 +174,6 @@ namespace SceenGame.Screens
         public override void Draw(GameTime gameTime)
         {
             ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.CornflowerBlue, 0, 0);
-
-            // Our player and enemy are both actually just text strings.
             var spriteBatch = ScreenManager.SpriteBatch;
 
             spriteBatch.Begin();
@@ -210,7 +189,11 @@ namespace SceenGame.Screens
 
             Vector2 pos = new Vector2(200,0);
 
-            spriteBatch.DrawString(_gameFont, "Hunt Down Birds", pos, Color.AntiqueWhite);
+            
+            string text;
+            text = $"Hunt Down All The Birds ";
+
+            spriteBatch.DrawString(_gameFont, text , pos, Color.AntiqueWhite);
 
             spriteBatch.End();
             if (TransitionPosition > 0 || _pauseAlpha > 0)

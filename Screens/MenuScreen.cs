@@ -7,7 +7,7 @@ using SceenGame.StateManagement;
 namespace SceenGame.Screens
 
 {
-    public abstract class MenuScreen : GameScreen
+    public abstract class MenuScreen : StateManagement.GameScreen
     {
         private readonly List<MenuEntry> _menuEntries = new List<MenuEntry>();
 
@@ -140,7 +140,7 @@ namespace SceenGame.Screens
 
             var titlePosition = new Vector2(graphics.Viewport.Width / 2, 80);
             var titleOrigin = font.MeasureString(_menuTitle) / 2;
-            var titleColor = new Color(192, 192, 192) * TransitionAlpha;
+            var titleColor = Color.AntiqueWhite * TransitionAlpha;
             const float titleScale = 1.25f;
 
             titlePosition.Y -= transitionOffset * 100;

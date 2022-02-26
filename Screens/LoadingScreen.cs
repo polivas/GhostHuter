@@ -6,13 +6,13 @@ using SceenGame.StateManagement;
 
 namespace SceenGame.Screens
 {
-    public class LoadingScreen : GameScreen
+    public class LoadingScreen : StateManagement.GameScreen
     {
         private readonly bool _loadingIsSlow;
         private bool _otherScreensAreGone;
-        private readonly GameScreen[] _screensToLoad;
+        private readonly StateManagement.GameScreen[] _screensToLoad;
 
-        private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow, GameScreen[] screensToLoad)
+        private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow, StateManagement.GameScreen[] screensToLoad)
         {
             _loadingIsSlow = loadingIsSlow;
             _screensToLoad = screensToLoad;
@@ -21,7 +21,7 @@ namespace SceenGame.Screens
         }
 
         public static void Load(ScreenManager screenManager, bool loadingIsSlow,
-                                PlayerIndex? controllingPlayer, params GameScreen[] screensToLoad)
+                                PlayerIndex? controllingPlayer, params StateManagement.GameScreen[] screensToLoad)
         {
             foreach (var screen in screenManager.GetScreens())
                 screen.ExitScreen();
@@ -59,15 +59,13 @@ namespace SceenGame.Screens
                 var spriteBatch = ScreenManager.SpriteBatch;
                 var font = ScreenManager.Font;
 
-                const string message = "Screen is Loading...";
+                const string message = "Loading...";
                 var viewport = ScreenManager.GraphicsDevice.Viewport;
                 var viewportSize = new Vector2(viewport.Width, viewport.Height);
                 var textSize = font.MeasureString(message);
                 var textPosition = (viewportSize - textSize) / 2;
-
                 var color = Color.White * TransitionAlpha;
 
-                // Draw the text.
                 spriteBatch.Begin();
                 spriteBatch.DrawString(font, message, textPosition, color);
                 spriteBatch.End();
