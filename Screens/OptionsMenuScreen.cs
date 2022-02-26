@@ -39,6 +39,15 @@ namespace SceenGame.Screens
 
         private void UnmuteMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
+            if (_muted == false)
+            {
+                ScreenManager.MuteMusic();
+                _muted = true;
+            }else if(_muted == true)
+            {
+                ScreenManager.UnmuteMusic();
+                _muted = false;
+            }
 
             SetMenuEntryText();
         }

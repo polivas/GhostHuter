@@ -21,6 +21,7 @@ namespace SceenGame.StateManagement
         private bool _isInitialized;
 
         public SoundEffect scrollEffect;
+
         public Song backgroundMusic;
 
 
@@ -55,11 +56,9 @@ namespace SceenGame.StateManagement
             MediaPlayer.Volume = (float)0.25;
             MediaPlayer.Play(backgroundMusic);
             
-
             Font = _content.Load<SpriteFont>("menufont");
             BlankTexture = _content.Load<Texture2D>("blank");
 
-            // Tell each of the screens to load thier content 
             foreach (var screen in _screens)
             {
                 screen.Activate();
@@ -101,6 +100,7 @@ namespace SceenGame.StateManagement
                     }
 
                     if (!screen.IsPopup) coveredByOtherScreen = true;
+                    
                 }
             }
         }
@@ -151,6 +151,16 @@ namespace SceenGame.StateManagement
         public void ScrollSound()
         {
             scrollEffect.Play();
+        }
+
+        public void MuteMusic()
+        {
+            MediaPlayer.Pause();
+        }
+
+        public void UnmuteMusic()
+        {
+            MediaPlayer.Play(backgroundMusic);
         }
 
         public void Deactivate()
