@@ -8,7 +8,7 @@ namespace SceenGame.Screens
 {
     public class MainMenuScreen : MenuScreen
     {
-        public MainMenuScreen() : base("Main  Menu")
+        public MainMenuScreen() : base("Main Menu")
         {
 
             var playGameMenuEntry = new MenuEntry("Play Game");
@@ -39,7 +39,7 @@ namespace SceenGame.Screens
 
         protected override void OnCancel(PlayerIndex playerIndex)
         {
-            const string message = "Want to exit?";
+            const string message = "Want to Exit?";
             var confirmExitMessageBox = new MessageBoxScreen(message);
 
             confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;

@@ -14,6 +14,8 @@ namespace SceenGame.Screens
         private ContentManager _content;
         private Texture2D _backgroundTexture;
 
+        private Texture2D _titleTexture;
+
         public BackgroundScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
@@ -26,6 +28,7 @@ namespace SceenGame.Screens
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
             _backgroundTexture = _content.Load<Texture2D>("environment_forest_alt1");
+            _titleTexture = _content.Load<Texture2D>("TitleCard");
         }
 
         public override void Unload()
@@ -46,9 +49,12 @@ namespace SceenGame.Screens
 
             spriteBatch.Begin();
 
+
             spriteBatch.Draw(_backgroundTexture, fullscreen,
                 new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha));
 
+            Vector2 pos = new Vector2((20), (0));
+            spriteBatch.Draw(_titleTexture, pos, Color.White);
             spriteBatch.End();
         }
     }

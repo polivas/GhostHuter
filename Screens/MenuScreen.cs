@@ -140,7 +140,7 @@ namespace SceenGame.Screens
 
             var titlePosition = new Vector2(graphics.Viewport.Width / 2, 80);
             var titleOrigin = font.MeasureString(_menuTitle) / 2;
-            var titleColor = Color.AntiqueWhite * TransitionAlpha;
+            var titleColor = Color.Black * TransitionAlpha;
             const float titleScale = 1.25f;
 
             titlePosition.Y -= transitionOffset * 100;
