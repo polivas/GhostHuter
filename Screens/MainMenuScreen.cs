@@ -4,12 +4,17 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using SceenGame.StateManagement;
 
+
+
+
 namespace SceenGame.Screens
 {
     public class MainMenuScreen : MenuScreen
     {
         public MainMenuScreen() : base("Main Menu")
         {
+
+
             var playGameMenuEntry = new MenuEntry("Play Hunter Game");
             var watchClip = new MenuEntry("Watch Clip");
             var optionsMenuEntry = new MenuEntry("Options");
@@ -21,19 +26,19 @@ namespace SceenGame.Screens
             exitMenuEntry.Selected += OnCancel;
 
             MenuEntries.Add(playGameMenuEntry);
-            MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(watchClip);
+            MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(exitMenuEntry);
         }
 
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen(), new CutSceneScreen());
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
         }
 
         private void WatchClipSelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new MainMenuScreen(), new CutSceneScreen());
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new CutSceneScreen());
 
         }
 

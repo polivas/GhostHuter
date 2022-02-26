@@ -80,7 +80,7 @@ namespace SceenGame.Screens
             var backgroundRectangle = new Rectangle((int)textPosition.X - hPad,
                 (int)textPosition.Y - vPad, (int)textSize.X + hPad * 2, (int)textSize.Y + vPad * 2);
 
-            var color = Color.White * TransitionAlpha;    
+            var color = Color.DarkSeaGreen * TransitionAlpha;    
 
             spriteBatch.Begin();
 

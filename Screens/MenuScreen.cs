@@ -4,12 +4,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SceenGame.StateManagement;
-
 namespace SceenGame.Screens
+
 {
     public abstract class MenuScreen : GameScreen
     {
         private readonly List<MenuEntry> _menuEntries = new List<MenuEntry>();
+
+
         private int _selectedEntry;
         private readonly string _menuTitle;
 
@@ -47,6 +49,8 @@ namespace SceenGame.Screens
 
             if (_menuUp.Occurred(input, ControllingPlayer, out playerIndex))
             {
+                ScreenManager.scrollEffect.Play();
+
                 _selectedEntry--;
 
                 if (_selectedEntry < 0)
@@ -55,6 +59,8 @@ namespace SceenGame.Screens
 
             if (_menuDown.Occurred(input, ControllingPlayer, out playerIndex))
             {
+                ScreenManager.scrollEffect.Play();
+
                 _selectedEntry++;
 
                 if (_selectedEntry >= _menuEntries.Count)

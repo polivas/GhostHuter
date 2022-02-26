@@ -37,9 +37,6 @@ namespace SceenGame.Screens
 
         public virtual void Update(MenuScreen screen, bool isSelected, GameTime gameTime)
         {
-            // When the menu selection changes, entries gradually fade between
-            // their selected and deselected appearance, rather than instantly
-            // popping to the new state.
             float fadeSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * 4;
 
             if (isSelected)
@@ -49,20 +46,19 @@ namespace SceenGame.Screens
         }
 
 
-        // This can be overridden to customize the appearance.
         public virtual void Draw(MenuScreen screen, bool isSelected, GameTime gameTime)
         {
-            var color = isSelected ? Color.Yellow : Color.White;
+            var color = isSelected ? Color.Black : Color.White;
 
-            // Pulsate the size of the selected menu entry.
             double time = gameTime.TotalGameTime.TotalSeconds;
+
             float pulsate = (float)Math.Sin(time * 6) + 1;
+
             float scale = 1 + pulsate * 0.05f * _selectionFade;
 
-            // Modify the alpha to fade text out during transitions.
+
             color *= screen.TransitionAlpha;
 
-            // Draw text, centered on the middle of each line.
             var screenManager = screen.ScreenManager;
             var spriteBatch = screenManager.SpriteBatch;
             var font = screenManager.Font;

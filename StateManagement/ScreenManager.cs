@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
+
 namespace SceenGame.StateManagement
 {
     public class ScreenManager : DrawableGameComponent
@@ -17,45 +20,42 @@ namespace SceenGame.StateManagement
 
         private bool _isInitialized;
 
-        /// <summary>
-        /// A SpriteBatch shared by all GameScreens
-        /// </summary>
+        public SoundEffect scrollEffect;
+        public Song backgroundMusic;
+
+
         public SpriteBatch SpriteBatch { get; private set; }
 
-        /// <summary>
-        /// A SpriteFont shared by all GameScreens
-        /// </summary>
         public SpriteFont Font { get; private set; }
 
-        /// <summary>
-        /// A blank texture that can be used by the screens.
-        /// </summary>
         public Texture2D BlankTexture { get; private set; }
 
-        /// <summary>
-        /// Constructs a new ScreenManager
-        /// </summary>
-        /// <param name="game">The game this ScreenManager belongs to</param>
         public ScreenManager(Game game) : base(game)
         {
             _content = new ContentManager(game.Services, "Content");
         }
 
-        /// <summary>
-        /// Initializes the ScreenManager
-        /// </summary>
         public override void Initialize()
         {
             base.Initialize();
             _isInitialized = true;
         }
 
-        /// <summary>
-        /// Loads content for the ScreenManager and its screens
-        /// </summary>
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+
+
+            scrollEffect = _content.Load<SoundEffect>("Menu Selection Click");
+            backgroundMusic = _content.Load<Song>("ForestFeel");
+
+            
+
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = (float)0.25;
+            MediaPlayer.Play(backgroundMusic);
+            
+
             Font = _content.Load<SpriteFont>("menufont");
             BlankTexture = _content.Load<Texture2D>("blank");
 
@@ -66,9 +66,6 @@ namespace SceenGame.StateManagement
             }
         }
 
-        /// <summary>
-        /// Unloads content for the ScreenManager's screens
-        /// </summary>
         protected override void UnloadContent()
         {
             foreach (var screen in _screens)
@@ -77,10 +74,6 @@ namespace SceenGame.StateManagement
             }
         }
 
-        /// <summary>
-        /// Updates all screens managed by the ScreenManager
-        /// </summary>
-        /// <param name="gameTime">An object representing time in the game</param>
         public override void Update(GameTime gameTime)
         {
             _input.Update();
@@ -101,7 +94,9 @@ namespace SceenGame.StateManagement
                 {
                     if (!otherScreenHasFocus)
                     {
-                        screen.HandleInput(gameTime, _input);
+
+                        screen.HandleInput(gameTime, _input);  
+                        
                         otherScreenHasFocus = true;
                     }
 
@@ -120,17 +115,13 @@ namespace SceenGame.StateManagement
             }
         }
 
-        /// <summary>
-        /// Adds a screen to the ScreenManager
-        /// </summary>
-        /// <param name="screen">The screen to add</param>
         public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer)
         {
             screen.ControllingPlayer = controllingPlayer;
             screen.ScreenManager = this;
             screen.IsExiting = false;
 
-            // If we have a graphics device, tell the screen to load content
+            
             if (_isInitialized) screen.Activate();
 
             _screens.Add(screen);
@@ -138,7 +129,6 @@ namespace SceenGame.StateManagement
 
         public void RemoveScreen(GameScreen screen)
         {
-            // If we have a graphics device, tell the screen to unload its content 
             if (_isInitialized) screen.Unload();
 
             _screens.Remove(screen);
@@ -156,6 +146,11 @@ namespace SceenGame.StateManagement
             SpriteBatch.Begin();
             SpriteBatch.Draw(BlankTexture, GraphicsDevice.Viewport.Bounds, Color.Black * alpha);
             SpriteBatch.End();
+        }
+
+        public void ScrollSound()
+        {
+            scrollEffect.Play();
         }
 
         public void Deactivate()

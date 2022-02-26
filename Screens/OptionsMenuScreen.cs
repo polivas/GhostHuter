@@ -8,7 +8,7 @@ namespace SceenGame.Screens
     {
 
         private readonly MenuEntry _musicMuted;
-        private readonly MenuEntry _languageMenuEntry;
+       
 
 
         private static bool _muted = false;
@@ -33,7 +33,7 @@ namespace SceenGame.Screens
         // Fills in the latest values for the options screen menu text.
         private void SetMenuEntryText()
         {
-            _musicMuted.Text = $" Menu Music Muted : {_muted}";
+            _musicMuted.Text = $"Music Muted : {_muted}";
 
         }
 

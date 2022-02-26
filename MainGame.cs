@@ -6,15 +6,16 @@ using Microsoft.Xna.Framework.Input;
 using SceenGame.StateManagement;
 using SceenGame.Screens;
 
+
 namespace SceenGame
 {
     public class MainGame : Game
     {
 
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-
+        private SpriteBatch _spriteBatch;       
         private readonly ScreenManager _screenManager;
+        
 
         public MainGame()
         {
@@ -24,6 +25,11 @@ namespace SceenGame
 
             var screenFactory = new ScreenFactory();
             Services.AddService(typeof(IScreenFactory), screenFactory);
+
+            _screenManager = new ScreenManager(this);
+            Components.Add(_screenManager);
+
+            AddInitialScreens();
         }
 
         private void AddInitialScreens()
