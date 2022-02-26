@@ -39,6 +39,7 @@ namespace SceenGame.StateManagement
         public override void Initialize()
         {
             base.Initialize();
+            
             _isInitialized = true;
         }
 

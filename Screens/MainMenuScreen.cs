@@ -11,28 +11,29 @@ namespace SceenGame.Screens
 {
     public class MainMenuScreen : MenuScreen
     {
-        public MainMenuScreen() : base("Main Menu")
+        public MainMenuScreen() : base("Main  Menu")
         {
 
 
-            var playGameMenuEntry = new MenuEntry("Play Hunter Game");
-            var watchClip = new MenuEntry("Watch Clip");
+            var playGameMenuEntry = new MenuEntry("Play Game");
+          //  var watchClip = new MenuEntry("Watch Clip");
             var optionsMenuEntry = new MenuEntry("Options");
             var exitMenuEntry = new MenuEntry("Exit");
 
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-            watchClip.Selected += WatchClipSelected;
+          //  watchClip.Selected += WatchClipSelected;
             optionsMenuEntry.Selected += OptionsMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
             MenuEntries.Add(playGameMenuEntry);
-            MenuEntries.Add(watchClip);
+         //   MenuEntries.Add(watchClip);
             MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(exitMenuEntry);
         }
 
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
+            
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
         }
 
@@ -49,7 +50,7 @@ namespace SceenGame.Screens
 
         protected override void OnCancel(PlayerIndex playerIndex)
         {
-            const string message = "Are you sure you want to exit?";
+            const string message = "Want to exit?";
             var confirmExitMessageBox = new MessageBoxScreen(message);
 
             confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
