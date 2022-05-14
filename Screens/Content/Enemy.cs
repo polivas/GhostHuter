@@ -126,6 +126,7 @@ namespace GhosterHunter.Screens.Content
             orgin = new Vector2(5, 5);
             this.body.OnCollision += CollisionHandler;
 
+            this._health = 2;
 ;
             _position = newPosition;
             _distance = newDistance;
@@ -140,8 +141,9 @@ namespace GhosterHunter.Screens.Content
         public void Update(GameTime gameTime, Player player)
         {
             _position += _velocity;
-
             orgin = new Vector2(16 / 2, 16 / 2);
+            Colliding = false;
+           
 
         }
 

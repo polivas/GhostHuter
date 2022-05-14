@@ -156,6 +156,7 @@ namespace GhosterHunter.Screens.Content
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
+            this.body.Position = Position;
 
             var currentMouseState = Mouse.GetState();
             var mousePosition = new Point(currentMouseState.X, currentMouseState.Y);
@@ -290,7 +291,7 @@ namespace GhosterHunter.Screens.Content
             Vector2 pos = new Vector2(Position.X, Position.Y - 50);
 
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < _health; i++)
             {
                 source = new Rectangle(((int)_hearts[i]) * 0 ,0,48, 48);
                 pos = new Vector2((Position.X +(12*i)) - 29 , Position.Y - 30);
