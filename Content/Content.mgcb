@@ -37,12 +37,6 @@
 /processorParam:TextureFormat=Color
 /build:cloakandleather.png
 
-#begin ForestFeel.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:ForestFeel.mp3
-
 #begin gamefont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -116,6 +110,12 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:menufont.spritefont
+
+#begin Of Far Different Nature - Zwischenwelt (CC-BY).ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Of Far Different Nature - Zwischenwelt (CC-BY).ogg
 
 #begin sheet.png
 /importer:TextureImporter

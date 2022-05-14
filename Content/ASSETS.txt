@@ -1,22 +1,17 @@
 ﻿GAME:
 
-Content/w_longsword.png  - created by Randalinski  of OpenGameArt.org (https://opengameart.org/content/longsword-64x64) and is under the public domain
-Content/bird_3_spawarrow.png - created by bluecarrot16 of OpenGameArt.org (https://opengameart.org/content/lpc-birds) and released under CC-BY-SA 4.0 (https://creativecommons.org/licenses/by/4.0/), CC-BY 3.0(https://creativecommons.org/licenses/by/3.0/), CC-BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/), CC-BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0/), GPL 3.0 (http://www.gnu.org/licenses/gpl-3.0.html), GPL 2.0 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html), OGA-BY 3.0 (https://opengameart.org/content/oga-by-30-faq)
-Content/forest_tiles.png - created by surt of OpenGameArt.org (https://opengameart.org/content/forest-tiles) and was released under the public domain 
-Content/Ranger.png  - created by Calciumtrice of OpenGameArt.org (https://opengameart.org/content/animated-ranger?destination=node/44490) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
-Content/Walk Down Ranger.png  - created by dpod41 of OpenGameArt.org (https://creativecommons.org/licenses/by/3.0/) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
-Content/Ranger Walk Up.png  - created by dpod41 of OpenGameArt.org (https://creativecommons.org/licenses/by/3.0/) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
-Content/Shoot Up and Down.png   - created by dpod41 of OpenGameArt.org (https://creativecommons.org/licenses/by/3.0/) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+Content/cloakandleather.png  - created by CLUNARSIGNALS of OpenGameArt.org (https://opengameart.org/content/overhead-action-rpg-hero-2) and licensed under CC-BY-SA 3.0(http://creativecommons.org/licenses/by-sa/3.0/)
+Centent/swoosh.png  - created by Buch of OpenGameArt.org (https://opengameart.org/content/a-platformer-in-the-forest) and licensed under CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+Content/ghost.png  - created by ansimuz of OpenGameArt.org (https://opengameart.org/content/chibi-monsters-set-01) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+Content/health.png  - created by knik1985 of OpenGameArt.org (https://opengameart.org/content/health) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+Content/sheet.png  - created by Buch of OpenGameArt.org (https://opengameart.org/content/outdoor-tiles-again) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
 
 MUSIC/EFFECTS:
 
-Content/bird.wav - created by Aj_ of OpenGameArt.org(https://opengameart.org/content/birdcricketfrog-and-mosquito-sounds) and released into the public domain
-Content/ForestFeel.mp3 - created by Roposhipin of SoundCloud.com(https://soundcloud.com/rozaliared/forest-feel) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+
+Content/Of Far Different Nature - Zwischenwelt (CC-BY).mp3 - created by Of Far Different Nature (https://opengameart.org/content/essentials-pack-for-fantasy-games-loop-box-3-orchestral-soundtracks-for-rpgs-and-adventures) and licensed under CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 Content/Menu Selection Click.wav  - created by NenadSimic of OpenGameArt.org(https://opengameart.org/content/menu-selection-click) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
 
 
-CLIP:
-N/A
-
 MENU BACKGROUND:
-Content/environment_forest_alt1.png  - created by ramtam of OpenGameArt.org(https://opengameart.org/content/forest-background-art-2) and licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/)
+Content/MainBackground- created by me using  Content/sheet.png 

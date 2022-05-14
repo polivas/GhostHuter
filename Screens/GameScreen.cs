@@ -101,20 +101,24 @@ namespace GhosterHunter.Screens
 
                 //Adding rigid body
                 var body = world.CreateCircle(radius, 1, position, BodyType.Dynamic);
+                body.LinearVelocity = new Vector2(
+                    random.Next(-20, 20),
+                    random.Next(-20, 20)
+                    );
+
+                body.SetRestitution(1);
+                body.AngularVelocity = (float)random.NextDouble() * MathHelper.Pi - MathHelper.PiOver2;
 
                 _enemies.Add(new Enemy(position, 150, radius, body));
             }
 
             //Creates  player
             Vector2 pos = new Vector2(105, 393);
-            _player = new Player(pos);
+            var body2 = world.CreateCircle(3, 1, pos, BodyType.Dynamic);
+            _player = new Player(pos,body2);
 
 
             _background = new Background();
-
-
-
-
         }
 
         // Load graphics content
@@ -129,7 +133,7 @@ namespace GhosterHunter.Screens
             foreach (var e in _enemies) e.LoadContent(_content);
             _background.LoadContent(_content);
 
-            //ScreenManager.Game.ResetElapsedTime();
+            ScreenManager.Game.ResetElapsedTime();
         }
 
 
@@ -197,8 +201,6 @@ namespace GhosterHunter.Screens
 
             string text;
             text = $"Find the Spirit ";
-
-            //spriteBatch.DrawString(_gameFont, text , pos, Color.AntiqueWhite);
 
             spriteBatch.End();
             if (TransitionPosition > 0 || _pauseAlpha > 0)

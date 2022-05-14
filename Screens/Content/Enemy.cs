@@ -23,15 +23,25 @@ namespace GhosterHunter.Screens.Content
 
     public class Enemy
     {
-        bool right;
-
-        float playerDistance;
-
+        /// <summary>
+        /// Enemeies body in the world
+        /// </summary>
         public Body body;
+
+        /// <summary>
+        /// Radius of the enemy
+        /// </summary>
         public float radius;
 
-        float scale;
-        Vector2 orgin;
+        /// <summary>
+        /// Scale to keep the enemy
+        /// </summary>
+        private float scale;
+
+        /// <summary>
+        /// Orgin of the Enemy
+        /// </summary>
+        private Vector2 orgin;
 
         /// <summary>
         /// Timer for animation sequence
@@ -46,7 +56,13 @@ namespace GhosterHunter.Screens.Content
         /// <summary>
         /// Boolean if enemy is dead
         /// </summary>
-        private bool _dead;
+        public bool _dead
+        {
+            get
+            {
+                return _health <= 0;
+            }
+        }
 
         /// <summary>
         /// Position of enemy
@@ -99,7 +115,8 @@ namespace GhosterHunter.Screens.Content
         /// </summary>
 
         private int maxHealth = 5;
-        private int currentHealth;
+        private int _health;
+
 
         public Enemy(Vector2 newPosition, float newDistance, float radius, Body body)
         {
@@ -126,35 +143,6 @@ namespace GhosterHunter.Screens.Content
 
             orgin = new Vector2(16 / 2, 16 / 2);
 
-            if (_distance <= 0)
-            {
-                right = true;
-            }
-            else if (_distance >= _oldDistance)
-            {
-                right = false;
-                _velocity.X = -1f;
-            }
-
-            if (right) _distance += 1; else _distance -= 1;
-
-            playerDistance = (player.Position.X - _position.X);
-            playerDistance += 150;
-
-            if (playerDistance >= -200 & playerDistance <= 200)
-            {
-                if (playerDistance < -5)
-                {
-                    _velocity.X = -1f;
-                    ActionMode = ActionMode.Left;
-                }
-                else if (playerDistance > 5 )
-                {
-                    _velocity.X = 1f;
-                    ActionMode = ActionMode.Right;
-                }
-
-            }
         }
 
 
@@ -182,20 +170,16 @@ namespace GhosterHunter.Screens.Content
 
                 if (this.body.LinearVelocity.X > 0)
                 {
-                    Flipped = false; //Going right
+                    this.Flipped = false;
                 }
                 if (this.body.LinearVelocity.X < 0)
                 {
-                    Flipped = true; //Going left
+                    this.Flipped = true;
                 }
-
-
                 //Draw the sprite
                 var source = new Rectangle(animationFrame * 16, 0, 16, 16);
 
                 SpriteEffects spriteEffects = (Flipped) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-
                 spriteBatch.Draw(_texture, body.Position, source, Color.White, 0f, orgin, scale, spriteEffects, 0);
 
             }
@@ -212,7 +196,6 @@ namespace GhosterHunter.Screens.Content
         }
 
 
-
         /// <summary>
         /// Collision Handler for the enemy class, handles any kind of collision in the created world
         /// </summary>
@@ -225,7 +208,7 @@ namespace GhosterHunter.Screens.Content
             if (other.Body.BodyType == BodyType.Dynamic)
             {
                 Colliding = true;
-                currentHealth -= 1;
+                _health -= 1;
                 return true;
             }
             if (other.Body.BodyType == BodyType.Static)

@@ -49,7 +49,7 @@ namespace GhosterHunter.StateManagement
 
 
             scrollEffect = _content.Load<SoundEffect>("Menu Selection Click");
-            backgroundMusic = _content.Load<Song>("ForestFeel");
+            backgroundMusic = _content.Load<Song>("Of Far Different Nature - Zwischenwelt (CC-BY)");
 
             
 
