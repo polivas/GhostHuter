@@ -28,7 +28,7 @@ namespace GhosterHunter.Screens
         /// <summary>
         /// Enemeies in the game
         /// </summary>
-        private List<Enemy> _enemies;
+        public List<Enemy> _enemies;
 
         /// <summary>
         /// Game Background

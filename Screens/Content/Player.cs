@@ -9,6 +9,9 @@ using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics.Contacts;
 
 
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
+
 namespace GhosterHunter.Screens.Content
 {
     /// <summary>
@@ -36,11 +39,13 @@ namespace GhosterHunter.Screens.Content
 
 
     public class Player
-    {       
+    {
 
+        /// <summary>
+        /// Sound to be used on melee attack
+        /// </summary>
+        private SoundEffect swishEffect;
 
-        
-  
         /// <summary>
         /// Texture of player
         /// </summary>
@@ -76,6 +81,7 @@ namespace GhosterHunter.Screens.Content
         /// </summary>
         public bool Flipped;
 
+        public bool isAttacking;
 
         /// <summary>
         /// Player Health information 
@@ -112,6 +118,8 @@ namespace GhosterHunter.Screens.Content
             texture = content.Load<Texture2D>("cloakandleather");
             heartTexture = content.Load<Texture2D>("health");
 
+            swishEffect = content.Load<SoundEffect>("melee sound");
+
             _health = 5;
             _hearts = new HeartMode[5];
             for (int i = 0; i < _health; i++) _hearts[i] = HeartMode.Full;
@@ -125,14 +133,14 @@ namespace GhosterHunter.Screens.Content
         public void Update(GameTime gameTime)
         {
 
-            var mouseState = Mouse.GetState();
-            var mousePosition = new Point(mouseState.X, mouseState.Y);
+            var currentMouseState = Mouse.GetState();
+            var mousePosition = new Point(currentMouseState.X, currentMouseState.Y);
 
             var keyboardState = Keyboard.GetState();
             float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             pressing = false;
-
+            isAttacking = false;
 
 
 
@@ -189,21 +197,43 @@ namespace GhosterHunter.Screens.Content
 
 
             //Swish Effect, may implement as its own class
-            //
-            if (mouseState.LeftButton == ButtonState.Pressed && _priorMouse.LeftButton == ButtonState.Released)
+            var lastMouseState = currentMouseState;
+
+             currentMouseState = Mouse.GetState();
+
+            if (lastMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed)
             {
-                Vector2 currClick = new Vector2(mouseState.X, mouseState.Y);
-                if (currClick.X - Position.X > 0)
+                swishEffect.Play();
+                isAttacking = true;
+
+
+
+                Vector2 swishPositon;
+                SpriteEffects se;
+
+                if ( keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
                 {
+                    Position.X += 1;
+                    se = SpriteEffects.None;
 
                 }
-                else if (currClick.Y - Position.Y > 0)
+                if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
                 {
+                    Position.X -= 1;
 
+                    se = SpriteEffects.FlipHorizontally;
                 }
-                else
-                {
 
+                if ( (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
+                {
+                    Position.Y -= 1;
+                    se = SpriteEffects.FlipVertically;
+                    
+                }
+                if ((keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
+                {
+                    Position.Y += 1;
+                    se = SpriteEffects.FlipVertically;
                 }
 
             }
@@ -215,6 +245,7 @@ namespace GhosterHunter.Screens.Content
         /// </summary>
         public void SwishAttack()
         {
+            swishEffect.Play();
 
         }
 
@@ -245,6 +276,9 @@ namespace GhosterHunter.Screens.Content
             {
                 source = new Rectangle(animationFrame * 16, 32, 16, 16);
                 spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(16, 16), 1.5f, SpriteEffects.None, 0);
+            }else if (isAttacking)
+            {
+
             }
             else
             {

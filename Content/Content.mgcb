@@ -98,6 +98,12 @@
 /processorParam:TextureFormat=Color
 /build:MainBackground.jpg
 
+#begin melee sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:melee sound.wav
+
 #begin Menu Selection Click.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
