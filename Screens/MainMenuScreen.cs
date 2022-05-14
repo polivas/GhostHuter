@@ -8,7 +8,7 @@ namespace GhosterHunter.Screens
 {
     public class MainMenuScreen : MenuScreen
     {
-        public MainMenuScreen() : base("Main Menu")
+        public MainMenuScreen() : base("Ghost Hunter")
         {
 
             var playGameMenuEntry = new MenuEntry("Play Game");

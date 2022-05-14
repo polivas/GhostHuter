@@ -71,6 +71,11 @@ namespace GhosterHunter.Screens.Content
         private double animationTimer;
 
         /// <summary>
+        /// Timer used as clicker for animation of player sprite. Deafult = false
+        /// </summary>
+        private double damageTimer;
+
+        /// <summary>
         /// Current frame in the animation, Deafult = 0
         /// </summary>
         private short animationFrame = 0;
@@ -102,19 +107,30 @@ namespace GhosterHunter.Screens.Content
         public bool isAttacking;
 
 
-
+        /// <summary>
+        /// An Array of HeartMode, Was going to make it so hearts were empty and just didnt disappear
+        /// </summary>
         private HeartMode[] _hearts;
 
+        /// <summary>
+        /// Heart Texture to keep track of Player Health ingame
+        /// </summary>
         Texture2D heartTexture;
 
-        const float MaxAttackTime = 0.33f;
+        /// <summary>
+        /// Previous MouseState
+        /// </summary>
         MouseState _priorMouse;
 
-        public bool isAttacked;
-        
+        /// <summary>
+        /// Swish Attack compents------------- Unable to implement in time
+        /// </summary>
         private Vector2 swishPositon;
         private SpriteEffects se;
 
+        /// <summary>
+        /// Keeps track of the death of player
+        /// </summary>
         public bool IsDead
         {
             get
@@ -142,18 +158,16 @@ namespace GhosterHunter.Screens.Content
 
             swishEffect = content.Load<SoundEffect>("melee sound");
 
-            isAttacked = false;
-
             _health = 5;
-            _hearts = new HeartMode[5];
+            _hearts = new HeartMode[_health];
             for (int i = 0; i < _health; i++) _hearts[i] = HeartMode.Full;
         }
 
 
         /// <summary>
-        /// Updates the hunter sprite
+        /// Updates the Player sprite
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Game time</param>
         public void Update(GameTime gameTime)
         {
             this.body.Position = Position;
@@ -167,13 +181,6 @@ namespace GhosterHunter.Screens.Content
             pressing = false;
             isAttacking = false;
             
-
-            //Update hearts
-            if (isAttacked)
-            {
-                for (int i = 0; i < _health; i++) _hearts[_health-1] = HeartMode.Empty;
-            }
-
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 Position += new Vector2(0, -1);
@@ -203,8 +210,27 @@ namespace GhosterHunter.Screens.Content
                 pressing = true;
             }
 
-            //Swish Effect, may implement as its own 
-             var lastMouseState = currentMouseState;
+            if ( keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)))
+            {
+                Position.X += 1;
+            }
+            if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)))
+            {
+                Position.X -= 1;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
+            {
+                Position.Y -= 1;
+            }
+            if ( keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
+            {
+                Position.Y += 1;
+            }
+
+
+            //Swish Effect, may implement as its own      Swish Attack compents------------- Unable to implement in time
+            var lastMouseState = currentMouseState;
 
             Vector2 swoodPos;
 
@@ -218,42 +244,34 @@ namespace GhosterHunter.Screens.Content
                     swishPositon = new Vector2(this.Position.X + 5 , this.Position.Y);
                     se = SpriteEffects.None;
                     TextureMode = TextureMode.HitRight;
-                    SwishAttack();
+                    swishEffect.Play();
                 }
                 if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
                 {
                     swishPositon = new Vector2(this.Position.X - 5, this.Position.Y);
                     se = SpriteEffects.FlipHorizontally;
                     TextureMode = TextureMode.HitLeft;
-                    SwishAttack();
+                    swishEffect.Play();
                 }
                 if ( (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
                 {
                     swishPositon = new Vector2(this.Position.X, this.Position.Y - 5);
                     se = SpriteEffects.FlipVertically;
                     TextureMode = TextureMode.HitUp;
-                    SwishAttack();
+                    swishEffect.Play();
                 }
                 if ((keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
                 {
                     swishPositon = new Vector2(this.Position.X, this.Position.Y + 5);
                     se = SpriteEffects.FlipVertically;
                     TextureMode = TextureMode.HitDown;
-                    SwishAttack();
+                    swishEffect.Play();
                 }
 
             }
 
         }
 
-        /// <summary>
-        /// A swish attack comes from the player
-        /// </summary>
-        public void SwishAttack()
-        {
-            swishEffect.Play();
-
-        }
 
         /// <summary>
         /// Draws the sprite using the supplied SpriteBatch
@@ -286,6 +304,7 @@ namespace GhosterHunter.Screens.Content
             else
             {
                 spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(16, 16), 1.5f, SpriteEffects.None, 0);
+
             }
 
             Vector2 pos = new Vector2(Position.X, Position.Y - 50);
@@ -301,7 +320,7 @@ namespace GhosterHunter.Screens.Content
         }
 
         /// <summary>
-        /// Collision Handler for the enemy class, handles any kind of collision in the created world
+        /// Collision Handler for the player class, handles any kind of collision in the created world
         /// </summary>
         /// <param name="fixture"></param>
         /// <param name="other"></param>
@@ -309,12 +328,15 @@ namespace GhosterHunter.Screens.Content
         /// <returns></returns>
         bool CollisionHandler(Fixture fixture, Fixture other, Contact contact)
         {
+            Vector2 temp = other.Body.LinearVelocity;
+
             if (other.Body.BodyType == BodyType.Dynamic)
             {
                 Colliding = true;
-                _health -= 1;
+                 _health -= 1;
                 return true;
             }
+         
             if (other.Body.BodyType == BodyType.Static)
             {
                 Colliding = true;

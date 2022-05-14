@@ -23,6 +23,9 @@ namespace GhosterHunter.Screens
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
 
+        /// <summary>
+        /// The Overall game player
+        /// </summary>
         public Player _player;
 
         /// <summary>
@@ -40,10 +43,10 @@ namespace GhosterHunter.Screens
         /// </summary>
         private World world;
 
-
-        public Vector2 Position { get; set; }
-        public Vector2 Velocity { get; set; }
-
+        /// <summary>
+        /// Amount of ememies in game
+        /// </summary>
+        private int enemiesAlive;
 
 
         public GameScreen()
@@ -67,7 +70,6 @@ namespace GhosterHunter.Screens
             //World Creation
             world = new World();
             world.Gravity = Vector2.Zero;
-
 
             var top = 0;
             var bottom = Constants.GAME_MAX_HEIGHT;
@@ -93,7 +95,7 @@ namespace GhosterHunter.Screens
 
             for (int i = 0; i < 5; i++) // Creates 5 enemies
             {
-                var radius = 3;
+                var radius = 5;
                 var position = new Vector2(
                     random.Next(radius, Constants.GAME_MAX_WIDTH - radius),
                     random.Next(radius, Constants.GAME_MAX_HEIGHT - radius)
@@ -111,6 +113,7 @@ namespace GhosterHunter.Screens
 
                 _enemies.Add(new Enemy(position, 150, radius, body));
             }
+            enemiesAlive = _enemies.Count;
 
             //Creates  player
             Vector2 pos = new Vector2(105, 393);
@@ -154,6 +157,14 @@ namespace GhosterHunter.Screens
 
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
+            foreach (var e in _enemies)
+            {
+                if (e._dead == true) {
+                    enemiesAlive -= 1;
+                    _enemies.Remove(e);
+                    break;
+                } 
+            }
 
             base.Update(gameTime, otherScreenHasFocus, false);
 
@@ -181,6 +192,15 @@ namespace GhosterHunter.Screens
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
             }
 
+            if (_player.IsDead)
+            {
+                ScreenManager.AddScreen(new DeathScreen(), ControllingPlayer);
+            }
+
+            if (enemiesAlive == 0)
+            {
+                ScreenManager.AddScreen(new WinScreen(), ControllingPlayer);
+            }
         }
 
         public override void Draw(GameTime gameTime)

@@ -113,10 +113,12 @@ namespace GhosterHunter.Screens.Content
         /// <summary>
         /// Enemy Health information 
         /// </summary>
-
-        private int maxHealth = 5;
         private int _health;
 
+        /// <summary>
+        /// Current Player in World
+        /// </summary>
+        private Player currPlayer;
 
         public Enemy(Vector2 newPosition, float newDistance, float radius, Body body)
         {
@@ -126,7 +128,7 @@ namespace GhosterHunter.Screens.Content
             orgin = new Vector2(5, 5);
             this.body.OnCollision += CollisionHandler;
 
-            this._health = 2;
+            this._health = 1;
 ;
             _position = newPosition;
             _distance = newDistance;
@@ -141,10 +143,10 @@ namespace GhosterHunter.Screens.Content
         public void Update(GameTime gameTime, Player player)
         {
             _position += _velocity;
-            orgin = new Vector2(16 / 2, 16 / 2);
+            orgin = new Vector2(5,5);
             Colliding = false;
-           
 
+            currPlayer = player;
         }
 
 
@@ -207,7 +209,7 @@ namespace GhosterHunter.Screens.Content
         /// <returns></returns>
         bool CollisionHandler(Fixture fixture, Fixture other, Contact contact)
         {
-            if (other.Body.BodyType == BodyType.Dynamic)
+            if ((other.Body.BodyType == BodyType.Dynamic ) )
             {
                 Colliding = true;
                 _health -= 1;
