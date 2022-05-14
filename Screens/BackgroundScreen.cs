@@ -4,9 +4,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using SceenGame.StateManagement;
+using GhosterHunter.StateManagement;
 
-namespace SceenGame.Screens
+namespace GhosterHunter.Screens
 {
 
     public class BackgroundScreen : StateManagement.GameScreen
@@ -14,7 +14,7 @@ namespace SceenGame.Screens
         private ContentManager _content;
         private Texture2D _backgroundTexture;
 
-        private Texture2D _titleTexture;
+        //private Texture2D _titleTexture;
 
         public BackgroundScreen()
         {
@@ -27,8 +27,8 @@ namespace SceenGame.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            _backgroundTexture = _content.Load<Texture2D>("environment_forest_alt1");
-            _titleTexture = _content.Load<Texture2D>("TitleCard");
+            _backgroundTexture = _content.Load<Texture2D>("MainBackground");
+           // _titleTexture = _content.Load<Texture2D>("Title");
         }
 
         public override void Unload()
@@ -54,7 +54,7 @@ namespace SceenGame.Screens
                 new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha));
 
             Vector2 pos = new Vector2((20), (0));
-            spriteBatch.Draw(_titleTexture, pos, Color.White);
+            //spriteBatch.Draw(_titleTexture, pos, Color.White);
             spriteBatch.End();
         }
     }

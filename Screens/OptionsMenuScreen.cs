@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SceenGame.Screens
+namespace GhosterHunter.Screens
 {
     public class OptionsMenuScreen : MenuScreen
     {

@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace SceenGame.StateManagement
+namespace GhosterHunter.StateManagement
 {
     /// <summary>
     /// Helper for reading input from keyboard, gamepad, and touch input. This class 

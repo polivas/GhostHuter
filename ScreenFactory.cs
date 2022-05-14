@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SceenGame.StateManagement;
+using GhosterHunter.StateManagement;
 
-namespace SceenGame
+
+namespace GhosterHunter
 {
     public class ScreenFactory : IScreenFactory
     {

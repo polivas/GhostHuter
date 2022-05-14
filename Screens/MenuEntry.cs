@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SceenGame.StateManagement;
+using GhosterHunter.StateManagement;
 
-namespace SceenGame.Screens
+namespace GhosterHunter.Screens
 {
 
     public class MenuEntry

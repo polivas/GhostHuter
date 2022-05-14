@@ -1,19 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SceenGame.StateManagement;
-using SceenGame.Screens;
+using GhosterHunter.StateManagement;
+using GhosterHunter.Screens;
+using GhosterHunter.Screens.Content;
 
 
-namespace SceenGame
+namespace GhosterHunter
 {
     public class MainGame : Game
     {
 
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;       
+        private SpriteBatch _spriteBatch;
         private readonly ScreenManager _screenManager;
-        
+
+
         public MainGame()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -27,6 +29,13 @@ namespace SceenGame
             Components.Add(_screenManager);
 
             AddInitialScreens();
+
+
+            _graphics.PreferredBackBufferWidth = Constants.GAME_WIDTH;
+            _graphics.PreferredBackBufferHeight = Constants.GAME_HEIGHT;
+
+
+            _graphics.ApplyChanges();
         }
 
         private void AddInitialScreens()
@@ -38,6 +47,8 @@ namespace SceenGame
 
         protected override void Initialize()
         {
+
+
             base.Initialize();
         }
 
@@ -51,6 +62,7 @@ namespace SceenGame
 
         protected override void Draw(GameTime gameTime)
         {
+
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
         }

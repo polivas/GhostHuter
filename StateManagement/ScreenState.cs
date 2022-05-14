@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SceenGame.StateManagement
+namespace GhosterHunter.StateManagement
 {
     public enum ScreenState
     {

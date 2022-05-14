@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SceenGame.StateManagement;
-namespace SceenGame.Screens
+using GhosterHunter.StateManagement;
+namespace GhosterHunter.Screens
 
 {
     public abstract class MenuScreen : StateManagement.GameScreen

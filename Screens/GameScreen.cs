@@ -10,30 +10,45 @@ using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Collision;
 using tainicom.Aether.Physics2D.Common;
 
-using SceenGame.StateManagement;
-using SceenGame.Screens.Content;
+using GhosterHunter.StateManagement;
+using GhosterHunter.Screens.Content;
 
-namespace SceenGame.Screens
+namespace GhosterHunter.Screens
 {
     public class GameScreen : StateManagement.GameScreen
     {
         private ContentManager _content;
         private SpriteFont _gameFont;
-        private World world;
-        private BackgroundBuilder background;
-        private List<BirdSprite> birds;
-        private HunterSprite hunter;
-        private SwordSprite sword;
 
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
-        
+
+        public Player _player;
+
+        /// <summary>
+        /// Enemeies in the game
+        /// </summary>
+        private List<Enemy> _enemies;
+
+        /// <summary>
+        /// Game Background
+        /// </summary>
+        private Background _background;
+
+        /// <summary>
+        /// The game world
+        /// </summary>
+        private World world;
+
+        MouseState _priorMouse;
+
+        public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
+
 
 
         public GameScreen()
         {
-            
-
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
             Initialize();
@@ -50,18 +65,15 @@ namespace SceenGame.Screens
         public void Initialize()
         {
             System.Random rand = new System.Random();
-
-            background = new BackgroundBuilder();
-
-
             //World Creation
             world = new World();
             world.Gravity = Vector2.Zero;
 
+
             var top = 0;
-            var bottom = Constants.GAME_HEIGHT;
+            var bottom = Constants.GAME_MAX_HEIGHT;
             var left = 0;
-            var right = Constants.GAME_WIDTH;
+            var right = Constants.GAME_MAX_WIDTH;
 
             var edges = new Body[]{
                 world.CreateEdge(new Vector2(left, top), new Vector2(right, top)),
@@ -76,39 +88,34 @@ namespace SceenGame.Screens
                 edge.SetRestitution(1.0f);
             }
 
-            //Spawn Birds/Bodies
+            //Create Enemies
             System.Random random = new System.Random();
-            birds = new List<BirdSprite>();
-            for (int i = 0; i < 5; i++)
+            _enemies = new List<Enemy>();
+
+            for (int i = 0; i < 5; i++) // Creates 5 enemies
             {
-                var radius = random.Next(1, 5);
+                var radius = 3;
                 var position = new Vector2(
-                    random.Next(radius, Constants.GAME_WIDTH - radius),
-                    random.Next(radius, Constants.GAME_HEIGHT - radius)
+                    random.Next(radius, Constants.GAME_MAX_WIDTH - radius),
+                    random.Next(radius, Constants.GAME_MAX_HEIGHT - radius)
                     );
 
+                //Adding rigid body
                 var body = world.CreateCircle(radius, 1, position, BodyType.Dynamic);
 
-                body.LinearVelocity = new Vector2(
-                    random.Next(-20, 20),
-                    random.Next(-20, 20)
-                    );
-
-                body.SetRestitution(1);
-                body.AngularVelocity = (float)random.NextDouble() * MathHelper.Pi - MathHelper.PiOver2;
-                birds.Add(new BirdSprite(radius, body));
+                _enemies.Add(new Enemy(position, 150, radius, body));
             }
 
-            //Spawn hunter in random location on map
-            Vector2 pos = (new Vector2(150,200));
-            hunter = new HunterSprite(pos);
+            //Creates  player
+            Vector2 pos = new Vector2(105, 393);
+            _player = new Player(pos);
 
-            var swordBody = world.CreateRectangle(25, 30, 1, (pos - (new Vector2(0, 35))), 0, BodyType.Dynamic);//check back
-            swordBody.LinearVelocity = new Vector2(0, 0);
-            swordBody.AngularVelocity = (float)0;
-            swordBody.SetRestitution(1);
 
-            sword = new SwordSprite(pos - (new Vector2(0, 35)), swordBody);           
+            _background = new Background();
+
+
+
+
         }
 
         // Load graphics content
@@ -117,12 +124,16 @@ namespace SceenGame.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
+
+            Rectangle heartFull = new Rectangle(0, 0, 48, 48);
+            Rectangle heartEmpty = new Rectangle(0, 48, 48, 48);
+
             _gameFont = _content.Load<SpriteFont>("gamefont");
-            background.LoadContent(_content);
-            foreach (var birds in birds) birds.LoadContent(_content);
-            sword.LoadContent(_content);
-            hunter.LoadContent(_content);
-            ScreenManager.Game.ResetElapsedTime();
+            _player.LoadContent(_content);
+            foreach (var e in _enemies) e.LoadContent(_content);
+            _background.LoadContent(_content);
+
+            //ScreenManager.Game.ResetElapsedTime();
         }
 
 
@@ -137,9 +148,43 @@ namespace SceenGame.Screens
         }
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
-            foreach (var bird in birds) bird.Update(gameTime);
-            hunter.Update(gameTime);
-            sword.Update(gameTime, (hunter.Position - (new Vector2(15, 38))), hunter.Flipped);
+
+
+            MouseState currentMouse = Mouse.GetState();
+            Vector2 mousePosition = new Vector2(currentMouse.X, currentMouse.Y);
+
+            _player.Update(gameTime);
+
+
+
+            _background.Update(gameTime, _player, _enemies);
+
+            //Update hearts
+            //           foreach (var heart in hearts)
+
+            ///Attacking mechanics, needs work to be succesfful
+            //Switsh Effect, may implement as its own class
+            //
+            if (currentMouse.LeftButton == ButtonState.Pressed && _priorMouse.LeftButton == ButtonState.Released)
+            {
+                Vector2 currClick = new Vector2(currentMouse.X, currentMouse.Y);
+                if (currClick.X - _player.Position.X > 0)
+                {
+
+                }
+                else if (currClick.Y - _player.Position.Y > 0)
+                {
+
+                }
+                else
+                {
+
+                }
+
+            }
+
+
+
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
 
@@ -176,24 +221,21 @@ namespace SceenGame.Screens
             ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.CornflowerBlue, 0, 0);
             var spriteBatch = ScreenManager.SpriteBatch;
 
+
+            _background.Draw(gameTime, spriteBatch, _player, _enemies);
+
+
+
+
             spriteBatch.Begin();
 
-            background.Draw(gameTime, spriteBatch);
+            Vector2 pos = new Vector2(200, 0);
+            Vector2 posHealth = new Vector2(5, 0);
 
-            hunter.Draw(gameTime, spriteBatch);
-
-
-            sword.Draw(gameTime, spriteBatch);
-
-            foreach (var bird in birds) bird.Draw(gameTime, spriteBatch);
-
-            Vector2 pos = new Vector2(200,0);
-
-            
             string text;
-            text = $"Hunt Down All The Birds ";
+            text = $"Find the Spirit ";
 
-            spriteBatch.DrawString(_gameFont, text , pos, Color.AntiqueWhite);
+            //spriteBatch.DrawString(_gameFont, text , pos, Color.AntiqueWhite);
 
             spriteBatch.End();
             if (TransitionPosition > 0 || _pauseAlpha > 0)

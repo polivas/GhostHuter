@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace SceenGame.Screens
+namespace GhosterHunter.Screens
 {
 
     public class PlayerIndexEventArgs : EventArgs

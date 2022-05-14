@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SceenGame.StateManagement;
+using GhosterHunter.StateManagement;
 
-namespace SceenGame.Screens
+namespace GhosterHunter.Screens
 {
 
     public class PauseMenuScreen : MenuScreen

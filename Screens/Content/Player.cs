@@ -9,28 +9,47 @@ using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics.Contacts;
 
 
-namespace SceenGame.Screens.Content
+namespace GhosterHunter.Screens.Content
 {
-
+    /// <summary>
+    /// Texture states for the given spritesheet, used for animation.
+    /// </summary>
     public enum TextureMode
     {
-        idle = 0,
-        Right = 2,
-        Left = 2,
-        Shoot = 3,
-        Up = 4,
-        Down = 5,
+        Up = 0, 
+        Right = 1,
+        Down = 2,
+        Left = 3,
+        HitUp = 4,
+        HitRight = 5,
+        HitDown = 6,
+        HitLeft = 7, 
+        Dead = 14,
+    
     }
 
 
-    public class HunterSprite
+    public class Player
     {       
-        private KeyboardState keyboardState;
-        private Texture2D texture; 
-        private Texture2D textureUp;
-        private Texture2D textureDown;
+  
+        /// <summary>
+        /// Texture of player
+        /// </summary>
+        private Texture2D texture;
+
+        /// <summary>
+        /// If button is currently being pressed, for idle animation
+        /// </summary>
         private bool pressing = false;
+
+        /// <summary>
+        /// Timer used as clicker for animation of player sprite. Deafult = false
+        /// </summary>
         private double animationTimer;
+
+        /// <summary>
+        /// Current frame in the animation, Deafult = 0
+        /// </summary>
         private short animationFrame = 0;
 
         /// <summary>
@@ -49,7 +68,22 @@ namespace SceenGame.Screens.Content
         public bool Flipped;
 
 
-        public HunterSprite(Vector2 position)
+        /// <summary>
+        /// Player Health information 
+        /// </summary>
+
+        private int maxHealth = 10;
+        private int _health;
+
+        public bool IsDead
+        {
+            get
+            {
+                return _health <= 0;
+            }
+        }
+
+        public Player(Vector2 position)
         {
             this.Position = position;
             
@@ -61,9 +95,9 @@ namespace SceenGame.Screens.Content
         /// <param name="content">The ContentManager to load with</param>
         public void LoadContent(ContentManager content)
         {
-            texture = content.Load<Texture2D>("ranger");
-            textureUp = content.Load<Texture2D>("Ranger Walk Up");
-            textureDown = content.Load<Texture2D>("Walk Down Ranger");
+            texture = content.Load<Texture2D>("cloakandleather");
+
+
         }
 
 
@@ -73,28 +107,32 @@ namespace SceenGame.Screens.Content
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
-             
-            keyboardState = Keyboard.GetState();
+
+            var mouseState = Mouse.GetState();
+            var mousePosition = new Point(mouseState.X, mouseState.Y);
+
+            var keyboardState = Keyboard.GetState();
+            float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             pressing = false;
 
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 Position += new Vector2(0, -1);
-                TextureMode = TextureMode.Up; //4
+                TextureMode = TextureMode.Up;
                 pressing = true;
             }
 
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
                 Position += new Vector2(0, 1);
-                TextureMode = TextureMode.Down;//5
+                TextureMode = TextureMode.Down;
                 pressing = true;
             }
-
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
                 Position += new Vector2(-1, 0);
-                TextureMode = TextureMode.Left;
+                TextureMode = TextureMode.Left; 
                 Flipped = true;
                 pressing = true;
             }
@@ -105,6 +143,24 @@ namespace SceenGame.Screens.Content
                 TextureMode = TextureMode.Right;
                 Flipped = false;
                 pressing = true;
+            }
+
+            if ((keyboardState.IsKeyDown(Keys.Space) || keyboardState.IsKeyDown(Keys.Space)) && (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)))
+            {
+                Position.X += 1;
+            }
+            if ((keyboardState.IsKeyDown(Keys.Space) || keyboardState.IsKeyDown(Keys.Space)) && (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)))
+            {
+                Position.X -= 1;
+            }
+
+            if ((keyboardState.IsKeyDown(Keys.Space) || keyboardState.IsKeyDown(Keys.Space)) && (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
+            {
+                Position.Y -= 1;
+            }
+            if ((keyboardState.IsKeyDown(Keys.Space) || keyboardState.IsKeyDown(Keys.Space)) && (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
+            {
+                Position.Y += 1;
             }
 
         }
@@ -126,40 +182,27 @@ namespace SceenGame.Screens.Content
             if (animationTimer > 0.3 )
             {
                 animationFrame++;
-                if (animationFrame > 9) animationFrame = 0;
+                if (animationFrame > 1) animationFrame = 0;
                 animationTimer -= 0.3;
             }
            if (animationTimer > 0.3 ) animationTimer -= 0.3;
 
-           
-            var source = new Rectangle(animationFrame * 32, (int)TextureMode * 32, 32, 32);
-
-            SpriteEffects spriteEffects = (Flipped) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-            Texture2D currTexture = texture;
 
 
-            if(TextureMode == TextureMode.Down && pressing)
+            var source = new Rectangle(animationFrame * 16, (int)TextureMode * 16, 16, 16);
+          
+            if (!pressing)
             {
-                currTexture = textureDown;
-                source = new Rectangle(animationFrame * 32, 0 * 32, 32, 32);
-                spriteBatch.Draw(currTexture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, SpriteEffects.None, 0);
-             }
-           if (TextureMode == TextureMode.Up && pressing)
-           {
-                currTexture = textureUp;
-                source = new Rectangle(animationFrame * 32, 0 * 32, 32, 32);
-                spriteBatch.Draw(currTexture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, SpriteEffects.None, 0);
+                source = new Rectangle(animationFrame * 16, 32, 16, 16);
+                spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(16, 16), 1.5f, SpriteEffects.None, 0);
             }
-           if (!(TextureMode == TextureMode.Up) && !(TextureMode == TextureMode.Down)) spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, spriteEffects, 0);          
-            if(!pressing)
+            else
             {
-                currTexture = texture;
-                source = new Rectangle(animationFrame * 32, 0 * 32, 32, 32);
-                spriteBatch.Draw(currTexture, Position, source, Color.White, 0f, new Vector2(32, 32), 1.5f, spriteEffects, 0);
+                spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(16, 16), 1.5f, SpriteEffects.None, 0);
             }
-           
-           
+
+
+
         }
 
     }
