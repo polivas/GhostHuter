@@ -30,7 +30,7 @@ namespace GhosterHunter
 
             AddInitialScreens();
 
-
+            
             _graphics.PreferredBackBufferWidth = Constants.GAME_WIDTH;
             _graphics.PreferredBackBufferHeight = Constants.GAME_HEIGHT;
 

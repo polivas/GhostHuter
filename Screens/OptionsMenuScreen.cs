@@ -8,8 +8,7 @@ namespace GhosterHunter.Screens
     {
 
         private readonly MenuEntry _musicMuted;
-       
-
+  
 
         private static bool _muted = false;
 

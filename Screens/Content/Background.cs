@@ -69,10 +69,10 @@ namespace GhosterHunter.Screens.Content
         /// <param name="enemies">Enemies in the world</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Player player, List<Enemy> enemies)
         {
-            float playerX = MathHelper.Clamp(player.Position.X, 300, Constants.GAME_MAX_WIDTH - 300);
+            float playerX = MathHelper.Clamp(player.Position.X, 300, Constants.GAME_MAX_WIDTH - 350);
             float offsetX = 300 - playerX;
 
-            float playerY = MathHelper.Clamp(player.Position.Y,300, Constants.GAME_MAX_HEIGHT - 300);
+            float playerY = MathHelper.Clamp(player.Position.Y,300, Constants.GAME_MAX_HEIGHT - 200);
             float offsetY = 300 - playerY;
 
             Matrix transform; //Could use for cloud layer
@@ -83,7 +83,7 @@ namespace GhosterHunter.Screens.Content
             spriteBatch.Begin(transformMatrix: transform);
             
             _tilemap.Draw(gameTime, spriteBatch);
-            _tileWater.Draw(gameTime, spriteBatch);
+            //_tileWater.Draw(gameTime, spriteBatch);
             player.Draw(gameTime, spriteBatch);
             _tilemapProps.Draw(gameTime, spriteBatch);
 

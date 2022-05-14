@@ -54,7 +54,7 @@ namespace GhosterHunter.StateManagement
             
 
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Volume = (float)0.25;
+            MediaPlayer.Volume = (float)0.15;
             MediaPlayer.Play(backgroundMusic);
             
             Font = _content.Load<SpriteFont>("menufont");

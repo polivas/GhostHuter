@@ -28,9 +28,18 @@ namespace GhosterHunter.Screens.Content
     
     }
 
+    public enum HeartMode
+    {
+        Full = 0,
+        Empty = 1,
+    }
+
 
     public class Player
     {       
+
+
+        
   
         /// <summary>
         /// Texture of player
@@ -71,9 +80,13 @@ namespace GhosterHunter.Screens.Content
         /// <summary>
         /// Player Health information 
         /// </summary>
-
-        private int maxHealth = 10;
         private int _health;
+        private HeartMode[] _hearts;
+
+        Texture2D heartTexture;
+
+        const float MaxAttackTime = 0.33f;
+        MouseState _priorMouse;
 
         public bool IsDead
         {
@@ -86,6 +99,7 @@ namespace GhosterHunter.Screens.Content
         public Player(Vector2 position)
         {
             this.Position = position;
+
             
         }
 
@@ -96,8 +110,11 @@ namespace GhosterHunter.Screens.Content
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("cloakandleather");
+            heartTexture = content.Load<Texture2D>("health");
 
-
+            _health = 5;
+            _hearts = new HeartMode[5];
+            for (int i = 0; i < _health; i++) _hearts[i] = HeartMode.Full;
         }
 
 
@@ -115,6 +132,13 @@ namespace GhosterHunter.Screens.Content
             float t = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             pressing = false;
+
+
+
+
+            //Update hearts
+            
+
 
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
@@ -163,8 +187,36 @@ namespace GhosterHunter.Screens.Content
                 Position.Y += 1;
             }
 
+
+            //Swish Effect, may implement as its own class
+            //
+            if (mouseState.LeftButton == ButtonState.Pressed && _priorMouse.LeftButton == ButtonState.Released)
+            {
+                Vector2 currClick = new Vector2(mouseState.X, mouseState.Y);
+                if (currClick.X - Position.X > 0)
+                {
+
+                }
+                else if (currClick.Y - Position.Y > 0)
+                {
+
+                }
+                else
+                {
+
+                }
+
+            }
+
         }
 
+        /// <summary>
+        /// A swish attack comes from the player
+        /// </summary>
+        public void SwishAttack()
+        {
+
+        }
 
         /// <summary>
         /// Draws the sprite using the supplied SpriteBatch
@@ -187,8 +239,6 @@ namespace GhosterHunter.Screens.Content
             }
            if (animationTimer > 0.3 ) animationTimer -= 0.3;
 
-
-
             var source = new Rectangle(animationFrame * 16, (int)TextureMode * 16, 16, 16);
           
             if (!pressing)
@@ -201,7 +251,15 @@ namespace GhosterHunter.Screens.Content
                 spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(16, 16), 1.5f, SpriteEffects.None, 0);
             }
 
+            Vector2 pos = new Vector2(Position.X, Position.Y - 50);
 
+
+            for (int i = 0; i < 5; i++)
+            {
+                source = new Rectangle(((int)_hearts[i]) * 0 ,0,48, 48);
+                pos = new Vector2((Position.X +(12*i)) - 29 , Position.Y - 30);
+                spriteBatch.Draw(heartTexture, pos, source, Color.White, 0f, new Vector2(28, 28), 0.25f, SpriteEffects.None, 0);
+            }
 
         }
 

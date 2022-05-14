@@ -40,7 +40,6 @@ namespace GhosterHunter.Screens
         /// </summary>
         private World world;
 
-        MouseState _priorMouse;
 
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
@@ -125,9 +124,6 @@ namespace GhosterHunter.Screens
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
 
-            Rectangle heartFull = new Rectangle(0, 0, 48, 48);
-            Rectangle heartEmpty = new Rectangle(0, 48, 48, 48);
-
             _gameFont = _content.Load<SpriteFont>("gamefont");
             _player.LoadContent(_content);
             foreach (var e in _enemies) e.LoadContent(_content);
@@ -149,41 +145,8 @@ namespace GhosterHunter.Screens
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
 
-
-            MouseState currentMouse = Mouse.GetState();
-            Vector2 mousePosition = new Vector2(currentMouse.X, currentMouse.Y);
-
             _player.Update(gameTime);
-
-
-
             _background.Update(gameTime, _player, _enemies);
-
-            //Update hearts
-            //           foreach (var heart in hearts)
-
-            ///Attacking mechanics, needs work to be succesfful
-            //Switsh Effect, may implement as its own class
-            //
-            if (currentMouse.LeftButton == ButtonState.Pressed && _priorMouse.LeftButton == ButtonState.Released)
-            {
-                Vector2 currClick = new Vector2(currentMouse.X, currentMouse.Y);
-                if (currClick.X - _player.Position.X > 0)
-                {
-
-                }
-                else if (currClick.Y - _player.Position.Y > 0)
-                {
-
-                }
-                else
-                {
-
-                }
-
-            }
-
-
 
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
