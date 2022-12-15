@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
-using GhosterHunter.StateManagement;
+using GhostHunter.StateManagement;
 
-namespace GhosterHunter.Screens
+namespace GhostHunter.Screens
 {
     public class LoadingScreen : StateManagement.GameScreen
     {

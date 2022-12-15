@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GhosterHunter.StateManagement
+namespace GhostHunter.StateManagement
 {
 
     public class InputAction

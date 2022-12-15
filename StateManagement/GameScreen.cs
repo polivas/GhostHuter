@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace GhosterHunter.StateManagement
+namespace GhostHunter.StateManagement
 {
 
     public abstract class GameScreen

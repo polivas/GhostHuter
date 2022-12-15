@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
-namespace GhosterHunter.StateManagement
+namespace GhostHunter.StateManagement
 {
     public class ScreenManager : DrawableGameComponent
     {
@@ -24,6 +24,7 @@ namespace GhosterHunter.StateManagement
 
         public Song backgroundMusic;
 
+        public Song HitNoise;
 
         public SpriteBatch SpriteBatch { get; private set; }
 
@@ -50,7 +51,7 @@ namespace GhosterHunter.StateManagement
 
             scrollEffect = _content.Load<SoundEffect>("Menu Selection Click");
             backgroundMusic = _content.Load<Song>("Of Far Different Nature - Zwischenwelt (CC-BY)");
-
+            HitNoise = _content.Load<Song>("melee sound");
             
 
             MediaPlayer.IsRepeating = true;
@@ -162,6 +163,11 @@ namespace GhosterHunter.StateManagement
         public void UnmuteMusic()
         {
             MediaPlayer.Play(backgroundMusic);
+        }
+
+        public void PlayHitNoise()
+        {
+            MediaPlayer.Play(HitNoise);
         }
 
         public void Deactivate()

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GhosterHunter
+namespace GhostHunter
 {
     public static class Program
     {

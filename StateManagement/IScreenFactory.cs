@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GhosterHunter.StateManagement
+namespace GhostHunter.StateManagement
 {
     public interface IScreenFactory
     {

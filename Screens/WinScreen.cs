@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GhosterHunter.StateManagement;
+using GhostHunter.StateManagement;
 
-namespace GhosterHunter.Screens
+namespace GhostHunter.Screens
 {
 
     public class WinScreen : MenuScreen

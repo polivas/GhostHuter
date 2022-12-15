@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GhosterHunter.StateManagement;
-using GhosterHunter.Screens;
-using GhosterHunter.Screens.Content;
+using GhostHunter.StateManagement;
+using GhostHunter.Screens;
+using GhostHunter.Screens.Content;
 
 
-namespace GhosterHunter
+namespace GhostHunter
 {
     public class MainGame : Game
     {

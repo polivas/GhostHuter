@@ -6,11 +6,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 
-namespace GhosterHunter.Screens.Content
+namespace GhostHunter.Screens.Content
 {
     public class Background : Game
     {
         public Texture2D texture;
+
+
         public Rectangle rectangle;
 
         //Tile stuff
@@ -23,11 +25,6 @@ namespace GhosterHunter.Screens.Content
         private Player _player;
 
 
-        private Texture2D _heartTexture;
-        public Texture2D[] hearts;
-
-        private Rectangle fullHeart;
-        private Rectangle emptyHeart;
 
         /// <summary>
         /// Loads sprites into the game
@@ -38,11 +35,6 @@ namespace GhosterHunter.Screens.Content
             _tilemap = new Tilemap("map.txt");
             _tilemapProps = new Tilemap("propMap.txt");
             //_tileWater = new Tilemap("waterMap.txt");
-
-            _heartTexture = content.Load<Texture2D>("health");
-
-            fullHeart = new Rectangle( 0 , 0 , 48, 48);
-            emptyHeart = new Rectangle(48, 0 , 48, 48);
 
             _tilemap.LoadContent(content);
             _tilemapProps.LoadContent(content);
@@ -55,6 +47,7 @@ namespace GhosterHunter.Screens.Content
         /// <param name="gameTime">An object representing time in the game</param>
         public void Update(GameTime gameTime, Player player, List<Enemy> enemies)
         {
+
             _player = player;
             _enemies = enemies;
             foreach (var enemy in enemies) enemy.Update(gameTime, _player);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GhosterHunter.Screens.Content
+namespace GhostHunter.Screens.Content
 {
     public static class Constants
     {

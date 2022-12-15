@@ -7,38 +7,33 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics.Contacts;
-
+using GhostHunter.Screens.Content.Resources;
+//using GhostHunter.Screens.Content.Managers;
 
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
-namespace GhosterHunter.Screens.Content
+namespace GhostHunter.Screens.Content
 {
     /// <summary>
     /// Texture states for the given spritesheet, used for animation.
     /// </summary>
     public enum TextureMode
     {
-        Up = 0, 
+        Up = 0,
         Right = 1,
         Down = 2,
         Left = 3,
         HitUp = 4,
         HitRight = 5,
         HitDown = 6,
-        HitLeft = 7, 
+        HitLeft = 7,
         Dead = 14,
-    
-    }
 
-    public enum HeartMode
-    {
-        Full = 0,
-        Empty = 1,
     }
 
 
-    public class Player
+    public class Player: Character
     {
         /// <summary>
         /// Player body in the world
@@ -73,7 +68,12 @@ namespace GhosterHunter.Screens.Content
         /// <summary>
         /// Timer used as clicker for animation of player sprite. Deafult = false
         /// </summary>
-        private double damageTimer;
+        private double attackTimer;
+
+        /// <summary>
+        /// Timer used as timer for stamina duraation
+        /// </summary>
+        private double staminaTimer;
 
         /// <summary>
         /// Current frame in the animation, Deafult = 0
@@ -91,10 +91,20 @@ namespace GhosterHunter.Screens.Content
         /// </summary>
         public bool Flipped;
 
+        public bool isAttacking;
+
         /// <summary>
         /// Player Health information 
         /// </summary>
         private int _health;
+
+        /// <summary>
+        /// current stamina of player
+        /// </summary>
+        private int _stamina;
+
+        public Score Score { get; set; }
+
 
         /// <summary>
         /// A boolean indicating if this enemy is colliding with an object in world
@@ -103,19 +113,6 @@ namespace GhosterHunter.Screens.Content
         {
             get; protected set;
         }
-
-        public bool isAttacking;
-
-
-        /// <summary>
-        /// An Array of HeartMode, Was going to make it so hearts were empty and just didnt disappear
-        /// </summary>
-        private HeartMode[] _hearts;
-
-        /// <summary>
-        /// Heart Texture to keep track of Player Health ingame
-        /// </summary>
-        Texture2D heartTexture;
 
         /// <summary>
         /// Previous MouseState
@@ -128,6 +125,12 @@ namespace GhosterHunter.Screens.Content
         private Vector2 swishPositon;
         private SpriteEffects se;
 
+        //----------------------------------------CLEAN ABOVE
+
+        public List<Point> newLevels = new List<Point>();
+        public int experiencePoints;
+
+
         /// <summary>
         /// Keeps track of the death of player
         /// </summary>
@@ -139,11 +142,17 @@ namespace GhosterHunter.Screens.Content
             }
         }
 
-        public Player(Vector2 position , Body body)
+        //public Player(Vector2 position, Body body , double health, double stamina)
+        public Player(Texture2D texture, Body body, Vector2 position, int health)
+              : base(texture, body, position, health)
         {
             this.Position = position;
             this.body = body;
             this.body.OnCollision += CollisionHandler;
+            this.texture = texture;
+
+            this._health = (int) health;
+            this._stamina = 100;
 
         }
 
@@ -152,15 +161,8 @@ namespace GhosterHunter.Screens.Content
         /// </summary>
         /// <param name="content">The ContentManager to load with</param>
         public void LoadContent(ContentManager content)
-        {
-            texture = content.Load<Texture2D>("cloakandleather");
-            heartTexture = content.Load<Texture2D>("health");
-
+        {            
             swishEffect = content.Load<SoundEffect>("melee sound");
-
-            _health = 5;
-            _hearts = new HeartMode[_health];
-            for (int i = 0; i < _health; i++) _hearts[i] = HeartMode.Full;
         }
 
 
@@ -168,7 +170,7 @@ namespace GhosterHunter.Screens.Content
         /// Updates the Player sprite
         /// </summary>
         /// <param name="gameTime">Game time</param>
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             this.body.Position = Position;
 
@@ -180,7 +182,9 @@ namespace GhosterHunter.Screens.Content
 
             pressing = false;
             isAttacking = false;
-            
+
+            //Basic Movement for player
+
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 Position += new Vector2(0, -1);
@@ -197,7 +201,7 @@ namespace GhosterHunter.Screens.Content
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
                 Position += new Vector2(-1, 0);
-                TextureMode = TextureMode.Left; 
+                TextureMode = TextureMode.Left;
                 Flipped = true;
                 pressing = true;
             }
@@ -210,7 +214,9 @@ namespace GhosterHunter.Screens.Content
                 pressing = true;
             }
 
-            if ( keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)))
+            //Running Speed --------- Implement stamina
+
+            if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)))
             {
                 Position.X += 1;
             }
@@ -223,7 +229,7 @@ namespace GhosterHunter.Screens.Content
             {
                 Position.Y -= 1;
             }
-            if ( keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
+            if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
             {
                 Position.Y += 1;
             }
@@ -239,9 +245,9 @@ namespace GhosterHunter.Screens.Content
                 swishEffect.Play();
                 isAttacking = true;
 
-                if ( keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+                if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
                 {
-                    swishPositon = new Vector2(this.Position.X + 5 , this.Position.Y);
+                    swishPositon = new Vector2(this.Position.X + 5, this.Position.Y);
                     se = SpriteEffects.None;
                     TextureMode = TextureMode.HitRight;
                     swishEffect.Play();
@@ -253,7 +259,7 @@ namespace GhosterHunter.Screens.Content
                     TextureMode = TextureMode.HitLeft;
                     swishEffect.Play();
                 }
-                if ( (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
+                if ((keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
                 {
                     swishPositon = new Vector2(this.Position.X, this.Position.Y - 5);
                     se = SpriteEffects.FlipVertically;
@@ -278,24 +284,24 @@ namespace GhosterHunter.Screens.Content
         /// </summary>
         /// <param name="gameTime">The game time</param>
         /// <param name="spriteBatch">The spritebatch to render with</param>
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-     
+
 
             //Update animation Timer
             animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
             //Update animation frame
-            if (animationTimer > 0.5 )
+            if (animationTimer > 0.5)
             {
                 animationFrame++;
                 if (animationFrame > 1) animationFrame = 0;
                 animationTimer -= 0.5;
             }
-           if (animationTimer > 0.5 ) animationTimer -= 0.5;
+            if (animationTimer > 0.5) animationTimer -= 0.5;
 
             var source = new Rectangle(animationFrame * 16, (int)TextureMode * 16, 16, 16);
-          
+
             if (!pressing)
             {
                 source = new Rectangle(animationFrame * 16, 32, 16, 16);
@@ -310,12 +316,6 @@ namespace GhosterHunter.Screens.Content
             Vector2 pos = new Vector2(Position.X, Position.Y - 50);
 
 
-            for (int i = 0; i < _health; i++)
-            {
-                source = new Rectangle(((int)_hearts[i]) * 0 ,0,48, 48);
-                pos = new Vector2((Position.X +(12*i)) - 29 , Position.Y - 30);
-                spriteBatch.Draw(heartTexture, pos, source, Color.White, 0f, new Vector2(28, 28), 0.25f, SpriteEffects.None, 0);
-            }
 
         }
 
@@ -333,10 +333,10 @@ namespace GhosterHunter.Screens.Content
             if (other.Body.BodyType == BodyType.Dynamic)
             {
                 Colliding = true;
-                 _health -= 1;
+               // _health -= 1;
                 return true;
             }
-         
+
             if (other.Body.BodyType == BodyType.Static)
             {
                 Colliding = true;
@@ -345,6 +345,39 @@ namespace GhosterHunter.Screens.Content
 
             return false;
         }
-    }
 
+        public override void OnCollide(Sprite sprite)
+        {
+            if (IsDead)
+                return;
+
+            if (sprite is Melee && ((Melee)sprite).Parent is Enemy)
+                Health--;
+
+            if (sprite is Arrow && ((Arrow)sprite).Parent is Enemy)
+                Health--;
+
+            if (sprite is Enemy)
+                Health -= 3;
+        }
+
+        /// <summary>
+        /// Calculated how much EX the player should recieve
+        /// </summary>
+        /// <param name="howMuch">How Much EX gained</param>
+        public void gainExperience(int howMuch)
+        {
+            if (howMuch <= 0)
+                return;
+            int num1 = Player.checkForLevelGain(this.experiencePoints, this.experiencePoints + howMuch);
+        }
+
+        public static int checkForLevelGain(int oldXP, int newXP)
+        {
+            int i = 1;
+
+            return i;
+        }
+
+    }    
 }

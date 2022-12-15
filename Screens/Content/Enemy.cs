@@ -9,39 +9,24 @@ using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Dynamics.Contacts;
 
 
-namespace GhosterHunter.Screens.Content
+namespace GhostHunter.Screens.Content
 {
-    /// <summary>
-    ///  Texture states for the given spritesheet, used for animation.
-    /// </summary>
-    public enum ActionMode
-    {
-        Idle = 0,
-        Right = 0,
-        Left = 0,
-    }
 
-    public class Enemy
+    public class Enemy : Character
     {
+
+
+     //   public Skeleton Skeleton { get; private set; }
+
+       // public Ghost Ghost { get; private set; }
+
+      //  public Archer Archer { get; private set; }
+
         /// <summary>
         /// Enemeies body in the world
         /// </summary>
         public Body body;
 
-        /// <summary>
-        /// Radius of the enemy
-        /// </summary>
-        public float radius;
-
-        /// <summary>
-        /// Scale to keep the enemy
-        /// </summary>
-        private float scale;
-
-        /// <summary>
-        /// Orgin of the Enemy
-        /// </summary>
-        private Vector2 orgin;
 
         /// <summary>
         /// Timer for animation sequence
@@ -67,7 +52,7 @@ namespace GhosterHunter.Screens.Content
         /// <summary>
         /// Position of enemy
         /// </summary>
-        private Vector2 _position;
+ //       private Vector2 _position;
 
         /// <summary>
         /// Enemys velocity
@@ -77,7 +62,7 @@ namespace GhosterHunter.Screens.Content
         /// <summary>
         /// The current position of the enemy
         /// </summary>
-        public Vector2 Position => _position;
+//        public Vector2 Position => _position;
 
         /// <summary>
         /// Enemys current distance from player.
@@ -94,10 +79,6 @@ namespace GhosterHunter.Screens.Content
         /// </summary>
         private Texture2D _texture;
 
-        /// <summary>
-        /// Action State of enemy
-        /// </summary>
-        public ActionMode ActionMode;
 
         /// <summary>
         /// A boolean indicating if this enemy is colliding with an object in world
@@ -120,46 +101,103 @@ namespace GhosterHunter.Screens.Content
         /// </summary>
         private Player currPlayer;
 
-        public Enemy(Vector2 newPosition, float newDistance, float radius, Body body)
+        //-------------------------------------CLEAN UPPER
+
+        private Vector2 movement;
+
+
+        private bool isWalkingTowardPlayer;
+
+        private float _timer;
+
+        public float DamageCoolDown = 1.75f;
+
+        public Enemy(Texture2D texture, Body body, Vector2 position, int health)
+              : base(texture, body, position, health)
         {
             this.body = body;
-            this.radius = radius;
-            scale = 1;
-            orgin = new Vector2(5, 5);
+            this._texture = texture;
+            this._position = position;
+
             this.body.OnCollision += CollisionHandler;
-
-            this._health = 1;
-;
-            _position = newPosition;
-            _distance = newDistance;
-
-            _oldDistance = _distance;
+            this._health = health;
         }
 
         /// <summary>
-        /// Updates the enemys sprite to float 
+        /// Updates the Sprites 
         /// </summary>
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime, Player player)
         {
+            _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            this.body.Position = Position;
+
             _position += _velocity;
-            orgin = new Vector2(5,5);
             Colliding = false;
 
             currPlayer = player;
+
+            int playerX = (int) currPlayer.Position.X;
+            int playerY = (int) currPlayer.Position.Y;
+
+            
+            
+            if (_timer >= DamageCoolDown && (playerX - Position.X <= 2) && (playerY - Position.Y <= 2))
+            {
+                _timer = 0;
+
+                this.Hit(currPlayer.Position, this.Position);
+            }
+            else
+            {
+                GetToPlayer();
+            }
+
+            /*
+            if (_timer >= DamageCoolDown)
+            {
+                _timer = 0;
+
+                //case hit, shoot, jump
+
+            }
+            */
         }
 
+        public void GetToPlayer()
+        {
+            int playerX = (int)currPlayer.Position.X;
+            int playerY = (int)currPlayer.Position.Y;
 
-        /// <summary>
-        /// Draws the animated sprite
-        /// </summary>
-        /// <param name="gametime">The game time</param>
-        /// <param name="spriteBatch">The spritebatch to draw with</param>
+            if(playerX > this.Position.X)
+            {
+                this.Position += new Vector2(1,0);
+                //TextureMode = TextureMode.Right;
+            }
+            else
+            {
+                this.Position += new Vector2(-1, 0);
+                //TextureMode = TextureMode.Left;
+               // Flipped = true;
+            }
+
+            if(playerY > this.Position.Y)
+            {
+                this.Position += new Vector2(0, -1);
+              //  TextureMode = TextureMode.Up;
+            }
+            else
+            {
+                this.Position += new Vector2(0, 1);
+               // TextureMode = TextureMode.Down;
+            }
+
+        }
+
         public void Draw(GameTime gametime, SpriteBatch spriteBatch)
         {
 
-
-            if (Colliding == false && _dead == false)
+            if (this.Colliding == false && _dead == false)
             {
                 //Update animation Timer
                 animationTimer += gametime.ElapsedGameTime.TotalSeconds;
@@ -172,6 +210,7 @@ namespace GhosterHunter.Screens.Content
                     animationTimer -= 0.3;
                 }
 
+                /*
                 if (this.body.LinearVelocity.X > 0)
                 {
                     this.Flipped = false;
@@ -180,23 +219,27 @@ namespace GhosterHunter.Screens.Content
                 {
                     this.Flipped = true;
                 }
+                */
+
+                Flipped = false;
+
                 //Draw the sprite
                 var source = new Rectangle(animationFrame * 16, 0, 16, 16);
 
                 SpriteEffects spriteEffects = (Flipped) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                spriteBatch.Draw(_texture, body.Position, source, Color.White, 0f, orgin, scale, spriteEffects, 0);
-
+                spriteBatch.Draw(_texture, this.body.Position, source, Color.White, 0f, this.Origin, 1, spriteEffects, 0);
+               
             }
         }
 
 
-        /// <summary>
+       /// <summary>
         /// Loads the enemies texture
         /// </summary>
         /// <param name="contentManager">The content manager to use</param>
         public void LoadContent(ContentManager contentManager)
         {
-            _texture = contentManager.Load<Texture2D>("ghost");
+            this.LoadContent(contentManager);
         }
 
 
@@ -211,17 +254,51 @@ namespace GhosterHunter.Screens.Content
         {
             if ((other.Body.BodyType == BodyType.Dynamic ) )
             {
-                Colliding = true;
-                _health -= 1;
+                Colliding = true; // On Player
                 return true;
             }
             if (other.Body.BodyType == BodyType.Static)
             {
-                Colliding = true;
+                Colliding = true; //On Edge
                 return true;
             }
 
             return false;
+        }
+
+        public override void OnCollide(Sprite sprite)
+        {
+            // If we crash into a player that is still alive
+            if (sprite is Player && !((Player)sprite).IsDead)
+            {
+                ((Player)sprite).Score.Value++;
+
+                // We want to remove the ship completely
+                IsRemoved = true;
+            }
+
+            // If we hit a bullet that belongs to a player      
+            if (sprite is Arrow && ((Arrow)sprite).Parent is Player)
+            {
+                Health--;
+
+                if (Health <= 0)
+                {
+                    IsRemoved = true;
+                    ((Player)sprite.Parent).Score.Value++;
+                }
+            }
+
+            if (sprite is Melee && ((Melee)sprite).Parent is Player)
+            {
+                Health--;
+
+                if (Health <= 0)
+                {
+                    IsRemoved = true;
+                    ((Player)sprite.Parent).Score.Value++;
+                }
+            }
         }
     }
 }

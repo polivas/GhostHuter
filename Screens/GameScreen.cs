@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,28 +11,43 @@ using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Collision;
 using tainicom.Aether.Physics2D.Common;
 
-using GhosterHunter.StateManagement;
-using GhosterHunter.Screens.Content;
+using GhostHunter.StateManagement;
+using GhostHunter.Screens.Content;
+using GhostHunter.Screens.Content.Managers;
 
-namespace GhosterHunter.Screens
+
+namespace GhostHunter.Screens.Content
 {
     public class GameScreen : StateManagement.GameScreen
     {
         private ContentManager _content;
-        private SpriteFont _gameFont;
+        private EnemyManager _enemyManager;
 
+        private SpriteFont _gameFont;
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
+
+        public static Random random = new Random(DateTime.Now.Millisecond);
+
+        public static Random Random;
 
         /// <summary>
         /// The Overall game player
         /// </summary>
+
         public Player _player;
+        public List<Enemy> _enemies;
+
+        private List<Sprite> _sprites;
+
+        public Vector2 CurrentPlayerPosition;
+
+        private Texture2D _playerTexture;
 
         /// <summary>
         /// Enemeies in the game
         /// </summary>
-        public List<Enemy> _enemies;
+
 
         /// <summary>
         /// Game Background
@@ -39,14 +55,27 @@ namespace GhosterHunter.Screens
         private Background _background;
 
         /// <summary>
+        /// Health and stammina stuff
+        /// </summary>
+        private Texture2D _healthBar;
+        public Rectangle healthBar;
+
+        private Texture2D _staminaBar;
+        public Rectangle staminaBar;
+
+        /// <summary>
         /// The game world
         /// </summary>
         private World world;
 
-        /// <summary>
-        /// Amount of ememies in game
-        /// </summary>
-        private int enemiesAlive;
+        public static int tileSize = 16;
+
+        Texture2D healthTexture;
+        Rectangle healthRectangle;
+
+        double healthMultiplier;
+        double staminaMultiplier;
+
 
 
         public GameScreen()
@@ -66,10 +95,17 @@ namespace GhosterHunter.Screens
         /// </summary>
         public void Initialize()
         {
+
             System.Random rand = new System.Random();
+            Random = new Random();
+
             //World Creation
             world = new World();
             world.Gravity = Vector2.Zero;
+
+            ///Goes up
+            healthMultiplier = 1.0;
+            staminaMultiplier = 1.0;
 
             var top = 0;
             var bottom = Constants.GAME_MAX_HEIGHT;
@@ -89,7 +125,9 @@ namespace GhosterHunter.Screens
                 edge.SetRestitution(1.0f);
             }
 
-            //Create Enemies
+            
+
+            /*** Create Enemies
             System.Random random = new System.Random();
             _enemies = new List<Enemy>();
 
@@ -101,7 +139,10 @@ namespace GhosterHunter.Screens
                     random.Next(radius, Constants.GAME_MAX_HEIGHT - radius)
                     );
 
-                //Adding rigid body
+                //Adding rigid body ---------------EDITING
+
+                Rectangle enemyBody = new Rectangle(position.X,position.Y,16,16)
+
                 var body = world.CreateCircle(radius, 1, position, BodyType.Dynamic);
                 body.LinearVelocity = new Vector2(
                     random.Next(-20, 20),
@@ -114,17 +155,24 @@ namespace GhosterHunter.Screens
                 _enemies.Add(new Enemy(position, 150, radius, body));
             }
             enemiesAlive = _enemies.Count;
+         */
+
+            //create eneimes
+
 
             //Creates  player
-            Vector2 pos = new Vector2(105, 393);
-            var body2 = world.CreateCircle(3, 1, pos, BodyType.Dynamic);
-            _player = new Player(pos,body2);
+ //           Vector2 pos = new Vector2(105, 393);
+ //           var body2 = world.CreateRectangle(16, 16, 1, pos, 0, BodyType.Dynamic);
+
+            //Texture2D texture, Body body, Vector2 position, int health
+
+            //_player = new Player(_playerTexture,body2, pos, 100);
 
 
             _background = new Background();
         }
 
-        // Load graphics content
+        // Load graphics content AKA Load Content
         public override void Activate()
         {
             if (_content == null)
@@ -132,13 +180,49 @@ namespace GhosterHunter.Screens
 
 
             _gameFont = _content.Load<SpriteFont>("gamefont");
+
+            _healthBar = _content.Load<Texture2D>("healthbar");
+            _staminaBar = _content.Load<Texture2D>("staminahbar");
+
+            _playerTexture = _content.Load<Texture2D>("cloakandleather");
+
+
             _player.LoadContent(_content);
-            foreach (var e in _enemies) e.LoadContent(_content);
+            //  foreach (var e in _enemies) e.LoadContent(_content);
             _background.LoadContent(_content);
 
-            ScreenManager.Game.ResetElapsedTime();
-        }
+            var meleeTexture = _content.Load<Texture2D>("swoosh");
+            var orbTexture = _content.Load<Texture2D>("Orb");
 
+            var meleePrefab = new Melee(meleeTexture);
+            var orbPrefab = new Orb(orbTexture);
+
+            Vector2 pos = new Vector2(105, 393);
+            var body2 = world.CreateRectangle(16, 16, 1, pos, 0, BodyType.Dynamic);
+
+            _sprites.Add(new Player(_playerTexture, body2, pos, 100)
+            {
+                Colour = Color.Blue,
+                Position = new Vector2(100, 50),
+                Layer = 0.3f,
+                Melee = meleePrefab,
+                Health = 100,
+                Score = new Resources.Score()
+                {
+                    Value = 0,
+                },
+            });
+
+            //_player = _sprites.Where(c => c is Player).Select(c => (Player)c).ToList();
+
+            _enemyManager = new EnemyManager(_content)
+            {
+                Melee = meleePrefab,
+            };
+
+            ScreenManager.Game.ResetElapsedTime();
+
+        }
 
         public override void Deactivate()
         {
@@ -152,19 +236,25 @@ namespace GhosterHunter.Screens
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
 
-            _player.Update(gameTime);
+//            _player.Update(gameTime);
             _background.Update(gameTime, _player, _enemies);
+
+            healthBar = new Rectangle(50, 20, _player.Health, 20);
+            //staminaBar = new Rectangle(50, 20, player.Stamina, 20);
 
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            foreach (var e in _enemies)
+            CurrentPlayerPosition = _player.Position;
+
+            foreach (var sprite in _sprites)
+                sprite.Update(gameTime);
+
+            _enemyManager.Update(gameTime);
+            if (_enemyManager.CanAdd && _sprites.Where(c => c is Enemy).Count() < _enemyManager.MaxEnemies)
             {
-                if (e._dead == true) {
-                    enemiesAlive -= 1;
-                    _enemies.Remove(e);
-                    break;
-                } 
+                _sprites.Add(_enemyManager.GetEnemy());
             }
+
 
             base.Update(gameTime, otherScreenHasFocus, false);
 
@@ -197,10 +287,13 @@ namespace GhosterHunter.Screens
                 ScreenManager.AddScreen(new DeathScreen(), ControllingPlayer);
             }
 
-            if (enemiesAlive == 0)
+
+            /***
+            if (enemiesAlive == 0) //Round over
             {
-                ScreenManager.AddScreen(new WinScreen(), ControllingPlayer);
+                ScreenManager.AddScreen(new WinScreen(), ControllingPlayer); // Chnage to Other but win -------------------------
             }
+            ***/
         }
 
         public override void Draw(GameTime gameTime)
@@ -208,25 +301,17 @@ namespace GhosterHunter.Screens
             ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.CornflowerBlue, 0, 0);
             var spriteBatch = ScreenManager.SpriteBatch;
 
-
             _background.Draw(gameTime, spriteBatch, _player, _enemies);
-
-
-
 
             spriteBatch.Begin();
 
             Vector2 pos = new Vector2(200, 0);
             Vector2 posHealth = new Vector2(5, 0);
 
-            string text;
-            text = $"Find the Spirit ";
-
             spriteBatch.End();
             if (TransitionPosition > 0 || _pauseAlpha > 0)
             {
                 float alpha = MathHelper.Lerp(1f - TransitionAlpha, 1f, _pauseAlpha / 2);
-
                 ScreenManager.FadeBackBufferToBlack(alpha);
             }
         }

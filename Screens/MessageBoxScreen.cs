@@ -4,9 +4,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GhosterHunter.StateManagement;
+using GhostHunter.StateManagement;
 
-namespace GhosterHunter.Screens
+namespace GhostHunter.Screens
 {
     public class MessageBoxScreen : StateManagement.GameScreen
     {

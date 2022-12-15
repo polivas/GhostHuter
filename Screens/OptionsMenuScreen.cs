@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GhosterHunter.Screens
+namespace GhostHunter.Screens
 {
     public class OptionsMenuScreen : MenuScreen
     {
@@ -29,10 +29,9 @@ namespace GhosterHunter.Screens
             MenuEntries.Add(back);
         }
 
-        // Fills in the latest values for the options screen menu text.
         private void SetMenuEntryText()
         {
-            _musicMuted.Text = $"Music Muted : {_muted}";
+            _musicMuted.Text = $"Mute Music : {_muted}";
 
         }
 

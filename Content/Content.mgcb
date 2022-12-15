@@ -68,7 +68,7 @@
 /processorParam:TextureFormat=Color
 /build:gradient.png
 
-#begin health.png
+#begin healthbar.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -78,7 +78,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:health.png
+/build:healthbar.jpg
 
 #begin MainBackground.jpg
 /importer:TextureImporter
@@ -117,6 +117,18 @@
 /processorParam:Quality=Best
 /build:Of Far Different Nature - Zwischenwelt (CC-BY).ogg
 
+#begin Orb.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Orb.png
+
 #begin sheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -129,6 +141,18 @@
 /processorParam:TextureFormat=Color
 /build:sheet.png
 
+#begin staminabar.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:staminabar.jpg
+
 #begin swoosh.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -140,4 +164,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:swoosh.png
+
+#begin tiny_skelly-NESW.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:tiny_skelly-NESW.png
 

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
-namespace GhosterHunter.Screens.Content
+namespace GhostHunter.Screens.Content
 {
     class Tilemap
     {
@@ -100,8 +100,15 @@ namespace GhosterHunter.Screens.Content
                 {
                     int index = _map[y * _mapWidth + x];
 
+
+                    //Switch to switch case? to handle water
+
                     if (index == -1) continue;
 
+         ///Add Static Colision to GameTiles valued, 208,209, 232, 233 [32* 32]
+        ///                                         212, 213, 236 ,237 [32* 32]
+                    /*if(index == 208 
+                    */
                     spriteBatch.Draw(
                         _tilesetTexture,
                         new Vector2(

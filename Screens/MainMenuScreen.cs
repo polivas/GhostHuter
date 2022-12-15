@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
-using GhosterHunter.StateManagement;
+using GhostHunter.StateManagement;
 
-namespace GhosterHunter.Screens
+namespace GhostHunter.Screens
 {
     public class MainMenuScreen : MenuScreen
     {
-        public MainMenuScreen() : base("Ghost Hunter")
+        public MainMenuScreen() : base("Nights in The Forest")
         {
 
             var playGameMenuEntry = new MenuEntry("Play Game");
