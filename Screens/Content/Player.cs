@@ -172,6 +172,13 @@ namespace GhostHunter.Screens.Content
         /// <param name="gameTime">Game time</param>
         public override void Update(GameTime gameTime)
         {
+
+            this.Health = _health;
+            this.Stamina = _stamina;
+
+            _health = this.Health;
+            _stamina = this.Stamina;
+
             this.body.Position = Position;
 
             var currentMouseState = Mouse.GetState();
@@ -182,6 +189,9 @@ namespace GhostHunter.Screens.Content
 
             pressing = false;
             isAttacking = false;
+
+            attackTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            staminaTimer  += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //Basic Movement for player
 
@@ -216,31 +226,43 @@ namespace GhostHunter.Screens.Content
 
             //Running Speed --------- Implement stamina
 
-            if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)))
+            if ( _stamina > 0)
             {
-                Position.X += 1;
-            }
-            if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)))
-            {
-                Position.X -= 1;
+                if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D)))
+                {
+                    Position.X += 1;
+                    _stamina -= 1;
+                }
+                if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)))
+                {
+                    Position.X -= 1;
+                    _stamina -= 1;
+                }
+
+                if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
+                {
+                    Position.Y -= 1;
+                    _stamina -= 1;
+                }
+                if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
+                {
+                    Position.Y += 1;
+                    _stamina -= 1;
+                }
             }
 
-            if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
+            if (staminaTimer > 2f && _stamina < 100)
             {
-                Position.Y -= 1;
+                _stamina+= 5;
+                staminaTimer = 0f;
             }
-            if (keyboardState.IsKeyDown(Keys.Space) && (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
-            {
-                Position.Y += 1;
-            }
-
 
             //Swish Effect, may implement as its own      Swish Attack compents------------- Unable to implement in time
             var lastMouseState = currentMouseState;
 
             Vector2 swoodPos;
 
-            if (currentMouseState.LeftButton == ButtonState.Pressed && _priorMouse.LeftButton == ButtonState.Released)
+            if (currentMouseState.LeftButton == ButtonState.Pressed && _priorMouse.LeftButton == ButtonState.Released && attackTimer > 0.25f)
             {
                 swishEffect.Play();
                 isAttacking = true;
@@ -251,6 +273,9 @@ namespace GhostHunter.Screens.Content
                     se = SpriteEffects.None;
                     TextureMode = TextureMode.HitRight;
                     swishEffect.Play();
+
+                    Hit(swishPositon, this.Position);
+                    attackTimer = 0;
                 }
                 if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
                 {
@@ -258,6 +283,9 @@ namespace GhostHunter.Screens.Content
                     se = SpriteEffects.FlipHorizontally;
                     TextureMode = TextureMode.HitLeft;
                     swishEffect.Play();
+
+                    Hit(swishPositon, this.Position);
+                    attackTimer = 0;
                 }
                 if ((keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)))
                 {
@@ -265,6 +293,9 @@ namespace GhostHunter.Screens.Content
                     se = SpriteEffects.FlipVertically;
                     TextureMode = TextureMode.HitUp;
                     swishEffect.Play();
+
+                    Hit(swishPositon, this.Position);
+                    attackTimer = 0;
                 }
                 if ((keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)))
                 {
@@ -272,6 +303,10 @@ namespace GhostHunter.Screens.Content
                     se = SpriteEffects.FlipVertically;
                     TextureMode = TextureMode.HitDown;
                     swishEffect.Play();
+
+                    Hit(swishPositon, this.Position);
+                    attackTimer = 0;
+
                 }
 
             }
@@ -286,8 +321,6 @@ namespace GhostHunter.Screens.Content
         /// <param name="spriteBatch">The spritebatch to render with</param>
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-
-
             //Update animation Timer
             animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -299,6 +332,7 @@ namespace GhostHunter.Screens.Content
                 animationTimer -= 0.5;
             }
             if (animationTimer > 0.5) animationTimer -= 0.5;
+            
 
             var source = new Rectangle(animationFrame * 16, (int)TextureMode * 16, 16, 16);
 
@@ -314,9 +348,6 @@ namespace GhostHunter.Screens.Content
             }
 
             Vector2 pos = new Vector2(Position.X, Position.Y - 50);
-
-
-
         }
 
         /// <summary>
@@ -346,6 +377,10 @@ namespace GhostHunter.Screens.Content
             return false;
         }
 
+        /// <summary>
+        /// Checks to see what effect the collison on the sprite should be
+        /// </summary>
+        /// <param name="sprite"> The oposing sprite</param>
         public override void OnCollide(Sprite sprite)
         {
             if (IsDead)
@@ -372,6 +407,12 @@ namespace GhostHunter.Screens.Content
             int num1 = Player.checkForLevelGain(this.experiencePoints, this.experiencePoints + howMuch);
         }
 
+        /// <summary>
+        /// Per night check if exoerience is granted, health and stamina raise
+        /// </summary>
+        /// <param name="oldXP"></param>
+        /// <param name="newXP"></param>
+        /// <returns></returns>
         public static int checkForLevelGain(int oldXP, int newXP)
         {
             int i = 1;

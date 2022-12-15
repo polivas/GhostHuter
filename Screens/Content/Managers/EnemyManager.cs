@@ -57,7 +57,7 @@ namespace GhostHunter.Screens.Content.Managers
 
         }
 
-        public Enemy GetEnemy(World world)
+        public Enemy GetEnemy(World world, int health)
         {
             // var texture = _textures[GameScreen.random.Next(0, _textures.Count)];
 
@@ -77,15 +77,15 @@ namespace GhostHunter.Screens.Content.Managers
 
             var body = world.CreateCircle(radius, 1, position, BodyType.Dynamic);
             body.LinearVelocity = new Vector2(
-                random.Next(-20, 20),
-                random.Next(-20, 20)
+                GameScreen.random.Next(-20, 20),
+                GameScreen.random.Next(-20, 20)
                 );
 
             body.SetRestitution(1);
-            body.AngularVelocity = (float)random.NextDouble() * MathHelper.Pi - MathHelper.PiOver2;
+            body.AngularVelocity = (float)GameScreen.random.NextDouble() * MathHelper.Pi - MathHelper.PiOver2;
 
 
-            return new Skeleton(_textures[0] )
+            return new Skeleton(_textures[0],body, position, health )
             {
                 Colour = Color.Red,
                 Melee = Melee,

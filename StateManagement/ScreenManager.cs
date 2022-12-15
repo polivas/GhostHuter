@@ -51,11 +51,11 @@ namespace GhostHunter.StateManagement
 
             scrollEffect = _content.Load<SoundEffect>("Menu Selection Click");
             backgroundMusic = _content.Load<Song>("Of Far Different Nature - Zwischenwelt (CC-BY)");
-            HitNoise = _content.Load<Song>("melee sound");
+            //HitNoise = _content.Load<SoundEffect>("melee sound");
             
 
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Volume = (float)0.15;
+            MediaPlayer.Volume = (float)0.05;
             MediaPlayer.Play(backgroundMusic);
             
             Font = _content.Load<SpriteFont>("menufont");

@@ -5,6 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using tainicom.Aether.Physics2D.Dynamics;
+
+
 
 namespace GhostHunter.Screens.Content
 {
@@ -35,9 +38,12 @@ namespace GhostHunter.Screens.Content
         /// </summary>
         string _filename;
 
-        public Tilemap(string filename)
+        private World _world;
+
+        public Tilemap(string filename , World world)
         {
             _filename = filename;
+            _world = world;
         }
 
         public void LoadContent(ContentManager content)
@@ -105,9 +111,15 @@ namespace GhostHunter.Screens.Content
 
                     if (index == -1) continue;
 
-         ///Add Static Colision to GameTiles valued, 208,209, 232, 233 [32* 32]
+        ///Add Static Colision to GameTiles valued, 208,209, 232, 233 [32* 32]
         ///                                         212, 213, 236 ,237 [32* 32]
                     /*if(index == 208 
+                    
+                    if(index == 208 || index == 209 || index == 232 || index == 232 || index == 212 || index == 213 || index == 236 || index == 237)
+                    {
+                        Vector2 pos = new Vector2(x, y);
+                        var body2 = _world.CreateRectangle(_tileWidth, _tileHeight, 1, pos, 0, BodyType.Static);
+                    }
                     */
                     spriteBatch.Draw(
                         _tilesetTexture,

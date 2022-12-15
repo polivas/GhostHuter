@@ -56,3 +56,4 @@ namespace GhostHunter.Screens.Content
 
         }
     }
+}

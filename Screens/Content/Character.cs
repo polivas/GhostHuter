@@ -14,6 +14,8 @@ namespace GhostHunter.Screens.Content
     {
         public int Health { get; set; }
 
+        public int Stamina { get; set; }
+
         public Melee Melee { get; set; }
 
         public Arrow Arrow { get; set; }

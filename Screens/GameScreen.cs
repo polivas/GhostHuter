@@ -14,9 +14,9 @@ using tainicom.Aether.Physics2D.Common;
 using GhostHunter.StateManagement;
 using GhostHunter.Screens.Content;
 using GhostHunter.Screens.Content.Managers;
+using GhostHunter.Screens.Content.Resources;
 
-
-namespace GhostHunter.Screens.Content
+namespace GhostHunter.Screens
 {
     public class GameScreen : StateManagement.GameScreen
     {
@@ -37,6 +37,8 @@ namespace GhostHunter.Screens.Content
 
         public Player _player;
         public List<Enemy> _enemies;
+
+        public int enemyHealth;
 
         private List<Sprite> _sprites;
 
@@ -69,9 +71,6 @@ namespace GhostHunter.Screens.Content
         private World world;
 
         public static int tileSize = 16;
-
-        Texture2D healthTexture;
-        Rectangle healthRectangle;
 
         double healthMultiplier;
         double staminaMultiplier;
@@ -107,6 +106,8 @@ namespace GhostHunter.Screens.Content
             healthMultiplier = 1.0;
             staminaMultiplier = 1.0;
 
+            enemyHealth = 5;
+
             var top = 0;
             var bottom = Constants.GAME_MAX_HEIGHT;
             var left = 0;
@@ -125,50 +126,6 @@ namespace GhostHunter.Screens.Content
                 edge.SetRestitution(1.0f);
             }
 
-            
-
-            /*** Create Enemies
-            System.Random random = new System.Random();
-            _enemies = new List<Enemy>();
-
-            for (int i = 0; i < 5; i++) // Creates 5 enemies
-            {
-                var radius = 5;
-                var position = new Vector2(
-                    random.Next(radius, Constants.GAME_MAX_WIDTH - radius),
-                    random.Next(radius, Constants.GAME_MAX_HEIGHT - radius)
-                    );
-
-                //Adding rigid body ---------------EDITING
-
-                Rectangle enemyBody = new Rectangle(position.X,position.Y,16,16)
-
-                var body = world.CreateCircle(radius, 1, position, BodyType.Dynamic);
-                body.LinearVelocity = new Vector2(
-                    random.Next(-20, 20),
-                    random.Next(-20, 20)
-                    );
-
-                body.SetRestitution(1);
-                body.AngularVelocity = (float)random.NextDouble() * MathHelper.Pi - MathHelper.PiOver2;
-
-                _enemies.Add(new Enemy(position, 150, radius, body));
-            }
-            enemiesAlive = _enemies.Count;
-         */
-
-            //create eneimes
-
-
-            //Creates  player
- //           Vector2 pos = new Vector2(105, 393);
- //           var body2 = world.CreateRectangle(16, 16, 1, pos, 0, BodyType.Dynamic);
-
-            //Texture2D texture, Body body, Vector2 position, int health
-
-            //_player = new Player(_playerTexture,body2, pos, 100);
-
-
             _background = new Background();
         }
 
@@ -182,14 +139,13 @@ namespace GhostHunter.Screens.Content
             _gameFont = _content.Load<SpriteFont>("gamefont");
 
             _healthBar = _content.Load<Texture2D>("healthbar");
-            _staminaBar = _content.Load<Texture2D>("staminahbar");
+            _staminaBar = _content.Load<Texture2D>("staminabar");
 
             _playerTexture = _content.Load<Texture2D>("cloakandleather");
 
+            _background.LoadContent(_content , world);
 
-            _player.LoadContent(_content);
-            //  foreach (var e in _enemies) e.LoadContent(_content);
-            _background.LoadContent(_content);
+            _sprites = new List<Sprite>();
 
             var meleeTexture = _content.Load<Texture2D>("swoosh");
             var orbTexture = _content.Load<Texture2D>("Orb");
@@ -200,20 +156,26 @@ namespace GhostHunter.Screens.Content
             Vector2 pos = new Vector2(105, 393);
             var body2 = world.CreateRectangle(16, 16, 1, pos, 0, BodyType.Dynamic);
 
-            _sprites.Add(new Player(_playerTexture, body2, pos, 100)
-            {
-                Colour = Color.Blue,
-                Position = new Vector2(100, 50),
-                Layer = 0.3f,
-                Melee = meleePrefab,
-                Health = 100,
-                Score = new Resources.Score()
-                {
-                    Value = 0,
-                },
-            });
+           _player = new Player(_playerTexture, body2, pos, 100)
+           {
+               Colour = Color.Blue,
+               Position = new Vector2(100, 50),
+               Layer = 0.3f,
+               Melee = meleePrefab,
+               Health = 100,
+               Score = new Score()
+               {
+                   Value = 0,
+               },
+           };
 
-            //_player = _sprites.Where(c => c is Player).Select(c => (Player)c).ToList();
+            _sprites.Add(_player);
+
+            _enemies = new List<Enemy>();
+
+            // _player.LoadContent(_content);
+
+            // _player = _sprites.Where(c => c is Player).Select(c => (Player)c).ToList();
 
             _enemyManager = new EnemyManager(_content)
             {
@@ -236,11 +198,13 @@ namespace GhostHunter.Screens.Content
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
 
+            int previousScore = _player.Score.Value;
+
 //            _player.Update(gameTime);
             _background.Update(gameTime, _player, _enemies);
 
-            healthBar = new Rectangle(50, 20, _player.Health, 20);
-            //staminaBar = new Rectangle(50, 20, player.Stamina, 20);
+            healthBar = new Rectangle(50, 20, _player.Health, 15);
+            staminaBar = new Rectangle(50, 40, _player.Stamina, 15);
 
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -252,7 +216,7 @@ namespace GhostHunter.Screens.Content
             _enemyManager.Update(gameTime);
             if (_enemyManager.CanAdd && _sprites.Where(c => c is Enemy).Count() < _enemyManager.MaxEnemies)
             {
-                _sprites.Add(_enemyManager.GetEnemy());
+                _sprites.Add(_enemyManager.GetEnemy(world, enemyHealth));
             }
 
 
@@ -262,6 +226,10 @@ namespace GhostHunter.Screens.Content
                 _pauseAlpha = Math.Min(_pauseAlpha + 1f / 32, 1);
             else
                 _pauseAlpha = Math.Max(_pauseAlpha - 1f / 32, 0);
+
+
+            if (_player.Score.Value > previousScore) enemyHealth += 1;
+
         }
 
         public override void HandleInput(GameTime gameTime, InputState input)
@@ -301,12 +269,15 @@ namespace GhostHunter.Screens.Content
             ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.CornflowerBlue, 0, 0);
             var spriteBatch = ScreenManager.SpriteBatch;
 
-            _background.Draw(gameTime, spriteBatch, _player, _enemies);
+            _background.Draw(gameTime, spriteBatch, _player); // _enemies
 
             spriteBatch.Begin();
 
             Vector2 pos = new Vector2(200, 0);
             Vector2 posHealth = new Vector2(5, 0);
+
+            spriteBatch.Draw(_healthBar, healthBar, Color.White);
+            spriteBatch.Draw(_staminaBar, staminaBar, Color.White);
 
             spriteBatch.End();
             if (TransitionPosition > 0 || _pauseAlpha > 0)

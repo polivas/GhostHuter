@@ -38,6 +38,8 @@ namespace GhostHunter.Screens.Content
         /// </summary>
         private short animationFrame = 0;
 
+        public TextureMode TextureMode;
+
         /// <summary>
         /// Boolean if enemy is dead
         /// </summary>
@@ -172,24 +174,24 @@ namespace GhostHunter.Screens.Content
             if(playerX > this.Position.X)
             {
                 this.Position += new Vector2(1,0);
-                //TextureMode = TextureMode.Right;
+                TextureMode = TextureMode.Right;
             }
             else
             {
                 this.Position += new Vector2(-1, 0);
-                //TextureMode = TextureMode.Left;
+                TextureMode = TextureMode.Left;
                // Flipped = true;
             }
 
             if(playerY > this.Position.Y)
             {
                 this.Position += new Vector2(0, -1);
-              //  TextureMode = TextureMode.Up;
+                TextureMode = TextureMode.Up;
             }
             else
             {
                 this.Position += new Vector2(0, 1);
-               // TextureMode = TextureMode.Down;
+                TextureMode = TextureMode.Down;
             }
 
         }

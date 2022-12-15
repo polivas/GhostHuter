@@ -22,8 +22,6 @@ namespace GhostHunter.Screens.Content
 
         protected float _rotation { get; set; }
 
-        protected float _scale { get; set; }
-
         protected Texture2D _texture;
 
         public List<Sprite> Children { get; set; }
@@ -143,7 +141,6 @@ namespace GhostHunter.Screens.Content
         public Sprite(Dictionary<string, Animation> animations)
         {
             _texture = null;
-
             Children = new List<Sprite>();
 
             Colour = Color.White;
