@@ -84,7 +84,7 @@ namespace GhostHunter.Screens.Content
             player.Draw(gameTime, spriteBatch);
             _tilemapProps.Draw(gameTime, spriteBatch);
 
-            //foreach (var enemy in enemies) enemy.Draw(gameTime, spriteBatch);
+           // foreach (var enemy in _enemies) enemy.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
 

@@ -10,27 +10,14 @@ using tainicom.Aether.Physics2D.Dynamics.Contacts;
 
 namespace GhostHunter.Screens.Content
 {
-    public class Ghost //: Enemy
+    public class Ghost : Enemy
     {
 
-        private int wasHitCounter;
-        private float targetRotation;
-        private bool turningRight;
-        private bool seenPlayer;
-        private int yOffset;
-        private int yOffsetExtra;
+        public float ShootingTimer = 1.75f;
 
-
-        public Ghost()
+        public Ghost(Texture2D texture, Body body, Vector2 position, int health)
+            : base(texture, body, position, health)
         {
         }
-/*
-        public Ghost(Vector2 position)
-          : base(nameof(Ghost), position)
-        {
-            this.slipperiness = 8;
-            this.isGlider = true;
-        }
-*/
     }
 }

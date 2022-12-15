@@ -173,7 +173,6 @@ namespace GhostHunter.Screens
             _sprites.Add(_player);
 
             _enemies = new List<Enemy>();
-
             
             for (int i = 0; i < 5; i++) // Creates 5 enemies
             {
@@ -183,7 +182,6 @@ namespace GhostHunter.Screens
                     random.Next(radius, Constants.GAME_MAX_HEIGHT - radius)
                     );
 
-                //Adding rigid body ---------------EDITING
 
                 Rectangle enemyBody = new Rectangle((int)position.X, (int)position.Y, 16, 16);
 
