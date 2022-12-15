@@ -127,11 +127,9 @@ namespace GhostHunter.Screens.Content
         public Sprite(Texture2D texture)
         {
             _texture = texture;
-
             Children = new List<Sprite>();
 
             Origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
-
             Colour = Color.White;
 
             TextureData = new Color[_texture.Width * _texture.Height];

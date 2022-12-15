@@ -135,6 +135,7 @@ namespace GhostHunter.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
+            Texture2D _enemyTexture = _content.Load<Texture2D>("tiny_skelly-NESW");
 
             _gameFont = _content.Load<SpriteFont>("gamefont");
 
@@ -158,7 +159,7 @@ namespace GhostHunter.Screens
 
            _player = new Player(_playerTexture, body2, pos, 100)
            {
-               Colour = Color.Blue,
+               Colour = Color.White,
                Position = new Vector2(100, 50),
                Layer = 0.3f,
                Melee = meleePrefab,
@@ -173,9 +174,44 @@ namespace GhostHunter.Screens
 
             _enemies = new List<Enemy>();
 
-            // _player.LoadContent(_content);
+            
+            for (int i = 0; i < 5; i++) // Creates 5 enemies
+            {
+                var radius = 5;
+                var position = new Vector2(
+                    random.Next(radius, Constants.GAME_MAX_WIDTH - radius),
+                    random.Next(radius, Constants.GAME_MAX_HEIGHT - radius)
+                    );
 
-            // _player = _sprites.Where(c => c is Player).Select(c => (Player)c).ToList();
+                //Adding rigid body ---------------EDITING
+
+                Rectangle enemyBody = new Rectangle((int)position.X, (int)position.Y, 16, 16);
+
+               // var body = world.CreateCircle(radius, 1, position, BodyType.Dynamic);
+               var body = world.CreateRectangle(16, 16, 1, pos, 0, BodyType.Dynamic);
+                body.LinearVelocity = new Vector2(
+                    random.Next(-20, 20),
+                    random.Next(-20, 20)
+                    );
+
+                body.SetRestitution(1);
+                body.AngularVelocity = (float)random.NextDouble() * MathHelper.Pi - MathHelper.PiOver2;
+
+
+                Enemy tempEnemy = new Enemy(_playerTexture, body2, pos, 100)
+                {
+                    Colour = Color.White,
+                    Position = new Vector2(100, 50),
+                    Layer = 0.3f,
+                    Melee = meleePrefab,
+                    Health = 100,
+                };
+                _enemies.Add(tempEnemy);
+            }
+
+            foreach (var e in _enemies){
+                _sprites.Add(e); 
+            } 
 
             _enemyManager = new EnemyManager(_content)
             {

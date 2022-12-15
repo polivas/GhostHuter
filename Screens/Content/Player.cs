@@ -163,6 +163,7 @@ namespace GhostHunter.Screens.Content
         public void LoadContent(ContentManager content)
         {            
             swishEffect = content.Load<SoundEffect>("melee sound");
+
         }
 
 
